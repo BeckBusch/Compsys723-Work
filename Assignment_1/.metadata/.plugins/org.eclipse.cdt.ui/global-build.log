@@ -1,0 +1,71 @@
+15:51:28 **** Build of configuration Nios II for project Assignment_1 ****
+make all 
+Info: Building ../Assignment_1_bsp/
+C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../Assignment_1_bsp/
+[BSP build complete]
+Info: Compiling FreeRTOS/croutine.c to obj/default/FreeRTOS/croutine.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/croutine.o FreeRTOS/croutine.c
+Info: Compiling FreeRTOS/event_groups.c to obj/default/FreeRTOS/event_groups.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/event_groups.o FreeRTOS/event_groups.c
+Info: Compiling FreeRTOS/heap.c to obj/default/FreeRTOS/heap.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/heap.o FreeRTOS/heap.c
+Info: Compiling FreeRTOS/list.c to obj/default/FreeRTOS/list.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/list.o FreeRTOS/list.c
+Info: Compiling FreeRTOS/port.c to obj/default/FreeRTOS/port.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/port.o FreeRTOS/port.c
+FreeRTOS/port.c:90:0: warning: "configTICK_RATE_HZ" redefined
+ #define configTICK_RATE_HZ 1000
+ ^
+In file included from FreeRTOS/FreeRTOS.h:98:0,
+                 from FreeRTOS/port.c:84:
+FreeRTOS/FreeRTOSConfig.h:97:0: note: this is the location of the previous definition
+ #define configTICK_RATE_HZ    ( ( portTickType ) 1000 )
+ ^
+FreeRTOS/port.c:91:0: warning: "configCPU_CLOCK_HZ" redefined
+ #define configCPU_CLOCK_HZ TIMER1MS_FREQ
+ ^
+In file included from FreeRTOS/FreeRTOS.h:98:0,
+                 from FreeRTOS/port.c:84:
+FreeRTOS/FreeRTOSConfig.h:98:0: note: this is the location of the previous definition
+ #define configCPU_CLOCK_HZ    ( ( unsigned long ) ALT_SYS_CLK ) 
+ ^
+FreeRTOS/port.c: In function 'vApplicationStackOverflowHook':
+FreeRTOS/port.c:96:2: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+  printf("[free_rtos] Application stack overflow at task: %s\n", pcTaskName);
+  ^
+FreeRTOS/port.c:96:2: warning: incompatible implicit declaration of built-in function 'printf'
+FreeRTOS/port.c:96:2: note: include '<stdio.h>' or provide a declaration of 'printf'
+FreeRTOS/port.c: In function 'alt_irq_register':
+FreeRTOS/port.c:231:18: warning: variable 'status' set but not used [-Wunused-but-set-variable]
+  alt_irq_context status;
+                  ^
+Info: Compiling FreeRTOS/queue.c to obj/default/FreeRTOS/queue.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/queue.o FreeRTOS/queue.c
+Info: Compiling FreeRTOS/tasks.c to obj/default/FreeRTOS/tasks.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/tasks.o FreeRTOS/tasks.c
+Info: Compiling FreeRTOS/timers.c to obj/default/FreeRTOS/timers.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/FreeRTOS/timers.o FreeRTOS/timers.c
+Info: Compiling freertos_test.c to obj/default/freertos_test.o
+nios2-elf-gcc -xc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/freertos_test.o freertos_test.c
+Info: Assembling FreeRTOS/port_asm.S to obj/default/FreeRTOS/port_asm.o
+nios2-elf-gcc -MP -MMD -c -I../Assignment_1_bsp//HAL/inc -I../Assignment_1_bsp/ -I../Assignment_1_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -Wa,-I../Assignment_1_bsp//HAL/inc -Wa,-I../Assignment_1_bsp/ -Wa,-I../Assignment_1_bsp//drivers/inc -Wa,-gdwarf2 -o obj/default/FreeRTOS/port_asm.o FreeRTOS/port_asm.S
+Info: Linking Assignment_1.elf
+nios2-elf-g++  -T'../Assignment_1_bsp//linker.x' -msys-crt0='../Assignment_1_bsp//obj/HAL/src/crt0.o' -msys-lib=hal_bsp -L../Assignment_1_bsp/   -Wl,-Map=Assignment_1.map   -O0 -g -Wall   -mhw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o Assignment_1.elf obj/default/FreeRTOS/croutine.o obj/default/FreeRTOS/event_groups.o obj/default/FreeRTOS/heap.o obj/default/FreeRTOS/list.o obj/default/FreeRTOS/port.o obj/default/FreeRTOS/queue.o obj/default/FreeRTOS/tasks.o obj/default/FreeRTOS/timers.o obj/default/freertos_test.o obj/default/FreeRTOS/port_asm.o -lm -msys-lib=m
+nios2-elf-insert Assignment_1.elf --thread_model hal --cpu_name nios2 --qsys true --simulation_enabled false --id 7 --sidp 0x430f0 --timestamp 1393900972 --stderr_dev jtag_uart --stdin_dev jtag_uart --stdout_dev jtag_uart --sopc_system_name nios2 --quartus_project_dir "C:/Users/beckb/Documents/GitHub/Compsys723-Work/Assignment_1" --sopcinfo C:/Users/beckb/Documents/GitHub/Compsys723-Work/Assignment_1/software/Assignment_1_bsp/../../nios2.sopcinfo
+Info: (Assignment_1.elf) 608 KBytes program size (code + initialized data).
+Info:                    130561 KBytes free for stack + heap.
+Info: Creating Assignment_1.objdump
+nios2-elf-objdump --disassemble --syms --all-header --source Assignment_1.elf >Assignment_1.objdump
+[Assignment_1 build complete]
+16:13:02 **** Build of configuration Nios II for project Assignment_1 ****
+make all 
+Info: Building ../Assignment_1_bsp/
+C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../Assignment_1_bsp/
+[BSP build complete]
+[Assignment_1 build complete]
+16:13:40 **** Incremental Build of configuration Nios II for project Assignment_1 ****
+make all 
+Info: Building ../Assignment_1_bsp/
+C:/intelFPGA_lite/18.1/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../Assignment_1_bsp/
+[BSP build complete]
+[Assignment_1 build complete]
