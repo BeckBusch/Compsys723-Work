@@ -28,17 +28,26 @@
 
 
 double valueArray[18] = { 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50 };
-double rocArray[18];
-int statsReceiveArray[8];
+double rocArray[18], freqDataInput[2];
+float thresholdReceiveArray[2];
 char outputBuffer[4];
-int tempTimeHours, tempTimeMin;
+int tempTimeHours, tempTimeMin, tempROC, stableStatsInput, statsReceiveArray[4];
 
 int tickCountStart, tickCountEnd;
+
+void refreshTimerCallback(xTimerHandle refreshTimer) {
+    vTaskResume(t4Handle);
+}
+
+
 
 void task_4_VGA_Controller(void* pvParameters) {
     //printf("VGA Controller Started\n");
     // Init Task
     //const TickType_t xDelay = 1000 / portTICK_PERIOD_MS;
+
+    TickType_t xLastWakeTime;
+    const TickType_t xFrequency = 250;
 
     // Init Pixel Buffer
     alt_up_pixel_buffer_dma_dev* pixel_buf;
@@ -110,17 +119,22 @@ void task_4_VGA_Controller(void* pvParameters) {
     //alt_up_char_buffer_draw(char_buf, '!', 51, 30);
 
     while (1) {
-        //printf("VGA Loop Started\n");
-        //tickCountStart = xTaskGetTickCount();
-        xQueueReceive(statsQueue, &statsReceiveArray, (TickType_t)0);
+        // Initialise the xLastWakeTime variable with the current time.
+        //xLastWakeTime = xTaskGetTickCount();
+
+        xQueuePeek(statsQueue, &statsReceiveArray, (TickType_t)0); // total, max, min, average
+        xQueuePeek(freqDataQueue, &freqDataInput, (TickType_t)0); // Freq and roc
+        xQueuePeek(threshQueue, &thresholdReceiveArray, (TickType_t)0); // freq and roc thresh
+        xQueuePeek(stableStatusQueue, &stableStatsInput, (TickType_t)0); // stability
 
         for (int i = 17; i > 0; i--) {
             valueArray[i] = valueArray[i - 1];
         }
-        valueArray[0] = 16000 / (double)statsReceiveArray[0];
-        for (int i = 0; i < 17; i++) {
-            rocArray[i] = fabs(valueArray[i] - valueArray[i + 1]) / vgaRefreshSec;
+        valueArray[0] = freqDataInput[0];
+        for (int i = 17; i > 0; i--) {
+            rocArray[i] = rocArray[i - 1];
         }
+        rocArray[0] = freqDataInput[1];
 
         for (int i = 0; i < 17; i++) {
             int tempStart = GraphXEnd - 25 - i * 26;
@@ -132,13 +146,13 @@ void task_4_VGA_Controller(void* pvParameters) {
 
         for (int i = 0; i < 17; i++) {
             int tempStart = GraphXEnd - 25 - i * 26;
-            double tempY = RocYEnd - 1 - (rocArray[i]) * 10;
+            double tempY = RoCYStart + 45 - (rocArray[i]) * 0.75;
             alt_up_pixel_buffer_dma_draw_box(pixel_buf, tempStart, RoCYStart + 1, tempStart + 26, RocYEnd - 1, ColorBlack, 0);
-            alt_up_pixel_buffer_dma_draw_box(pixel_buf, tempStart, tempY, tempStart + 26, RocYEnd - 1, ColorBlue, 0);
+            alt_up_pixel_buffer_dma_draw_box(pixel_buf, tempStart, RoCYStart + 45, tempStart + 26, tempY, ColorBlue, 0);
         }
 
         // freq, Stability Bool, Freq Thresh x10, RoC Thresh x10, total time in seconds, average time in ms, max time in ms, min time in ms
-        if (statsReceiveArray[1]) {
+        if (stableStatsInput) {
             alt_up_char_buffer_string(char_buf, "Stable  ", FirstColStart + 15, FirstRowHeight);
             alt_up_pixel_buffer_dma_draw_box(pixel_buf, (FirstColStart + 15) * 8 - 5, FirstRowHeight * 8 - 5, (FirstColStart + 23) * 8 + 4, (FirstRowHeight + 1) * 8 + 4, ColorBlack, 0);
             alt_up_pixel_buffer_dma_draw_box(pixel_buf, (FirstColStart + 15) * 8 - 5, FirstRowHeight * 8 - 5, (FirstColStart + 21) * 8 + 4, (FirstRowHeight + 1) * 8 + 4, ColorGreen, 0);
@@ -148,42 +162,43 @@ void task_4_VGA_Controller(void* pvParameters) {
         }
 
         // Live frequency
-        sprintf(outputBuffer, "%6.3f Hz", (16000 / (double)statsReceiveArray[0]));
+        sprintf(outputBuffer, "%6.3f Hz", freqDataInput[0]);
         alt_up_char_buffer_string(char_buf, outputBuffer, 69, 11);
         // Live RoC
-        sprintf(outputBuffer, "%3.1f Hz/Sec", rocArray[0]);
+        sprintf(outputBuffer, "%d Hz/Sec   ", (int)freqDataInput[1]);
         alt_up_char_buffer_string(char_buf, outputBuffer, 69, RoCTextStart + 7);
         // Freq Threshold
-        sprintf(outputBuffer, "%4.1f Hz", (float)statsReceiveArray[2] / 10);
+        sprintf(outputBuffer, "%4.1f Hz", thresholdReceiveArray[0]);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 16, SecRowHeight);
         //RoC threshold
-        sprintf(outputBuffer, "%3.1f Hz/Sec", (float)statsReceiveArray[3] / 10);
+        sprintf(outputBuffer, "%3.1f Hz/Sec", thresholdReceiveArray[1]);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 15, ThirdRowHeight);
         // Total Hours
-        tempTimeHours = statsReceiveArray[4] / 3600;
+        tempTimeHours = statsReceiveArray[0] / 3600;
         sprintf(outputBuffer, "%02d", tempTimeHours);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 19, FourthRowHeight);
         // Total Min
-        tempTimeMin = (statsReceiveArray[4] - (3600 * tempTimeHours)) / 60;
+        tempTimeMin = (statsReceiveArray[0] - (3600 * tempTimeHours)) / 60;
         sprintf(outputBuffer, "%02d", tempTimeMin);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 22, FourthRowHeight);
         // Total sec
-        sprintf(outputBuffer, "%02d", (statsReceiveArray[4] - (3600 * tempTimeHours) - (60 * tempTimeMin)));
+        sprintf(outputBuffer, "%02d", (statsReceiveArray[0] - (3600 * tempTimeHours) - (60 * tempTimeMin)));
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 25, FourthRowHeight);
         // Average time
-        sprintf(outputBuffer, "%03d ms", statsReceiveArray[5]);
+        sprintf(outputBuffer, "%03d ms", statsReceiveArray[1]);
         alt_up_char_buffer_string(char_buf, outputBuffer, SecondColStart + 14, FirstRowHeight);
         // Max time
-        sprintf(outputBuffer, "%03d ms", statsReceiveArray[6]);
+        sprintf(outputBuffer, "%03d ms", statsReceiveArray[2]);
         alt_up_char_buffer_string(char_buf, outputBuffer, SecondColStart + 10, SecRowHeight);
         // Min time
-        sprintf(outputBuffer, "%03d ms", statsReceiveArray[7]);
+        sprintf(outputBuffer, "%03d ms", statsReceiveArray[3]);
         alt_up_char_buffer_string(char_buf, outputBuffer, SecondColStart + 10, ThirdRowHeight);
 
 
         //tickCountEnd = (xTaskGetTickCount() - tickCountStart);
         //printf("VGA Completed in %f Seconds\n", (float)tickCountEnd/configTICK_RATE_HZ);
         vTaskSuspend(t4Handle);
+        //vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }
 

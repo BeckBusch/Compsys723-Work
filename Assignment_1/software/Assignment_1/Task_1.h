@@ -12,7 +12,9 @@ void freq_relay_ISR();
 void task_1_Analyser(void* pvParameters);
 void ps2_isr(void* ps2_device, alt_u32 id);
 
-int thresholdSendArray[2];
+int freqOutput, stabilityOutput;
+float thresholdSendArray[2];
+double freqDataOutput[2];
 
 #endif /* TASK_1_H */
 /*** end of file ***/

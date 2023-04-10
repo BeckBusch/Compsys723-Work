@@ -2,12 +2,17 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="API_PRESENT" key="selection"/>
+		<item value="config" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="config"/>
+			<item value="`config"/>
+			<item value="allocation"/>
+			<item value="dynamic"/>
+			<item value="yeild"/>
 			<item value="api_present"/>
 			<item value="alt_enh"/>
 		</list>

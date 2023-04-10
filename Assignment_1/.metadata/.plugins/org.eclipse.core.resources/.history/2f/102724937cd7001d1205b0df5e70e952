@@ -23,7 +23,6 @@ TaskHandle_t t3Handle = NULL;
 TaskHandle_t t4Handle = NULL;
 
 int main(void) {
-	startTickTime = xTaskGetTickCount();
 	alt_up_ps2_dev* ps2_device = alt_up_ps2_open_dev(PS2_NAME);
 
 	if (ps2_device == NULL) {
@@ -32,15 +31,15 @@ int main(void) {
 	}
 
 	alt_up_ps2_enable_read_interrupt(ps2_device);
-	alt_irq_register(PS2_IRQ, ps2_device, ps2_isr);
+	//alt_irq_register(PS2_IRQ, ps2_device, ps2_isr);
 
 	alt_irq_register(FREQUENCY_ANALYSER_IRQ, 0, freq_relay_ISR);
 	freqQueue = xQueueCreate(1, sizeof(freqOutput));
 	freqDataQueue = xQueueCreate(1, sizeof(freqDataOutput));
 
-	threshQueue = xQueueCreate(1, sizeof(thresholdSendArray));
+
 	statsQueue = xQueueCreate(1, sizeof(statsMessage));
-	stableStatusQueue = xQueueCreate(1, sizeof(stabilityOutput));
+	threshQueue = xQueueCreate(1, sizeof(thresholdSendArray));
 
 	refreshTimer = xTimerCreate("Refresh Timer", vgaRefreshMs, pdTRUE, NULL, refreshTimerCallback);
 	if (xTimerStart(refreshTimer, 0) != pdPASS) {

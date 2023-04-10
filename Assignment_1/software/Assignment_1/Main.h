@@ -29,7 +29,7 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "FreeRTOS/timers.h"
-
+#include "FreeRTOS/semphr.h"
 
 
 #define vgaRefreshMs 250 // dont change tbh the x axis is hard coded
@@ -44,6 +44,9 @@ TimerHandle_t refreshTimer;
 
 QueueHandle_t statsQueue;
 QueueHandle_t threshQueue;
+QueueHandle_t freqQueue;
+QueueHandle_t freqDataQueue;
+QueueHandle_t stableStatusQueue;
 
 #endif /* MAIN_H */
 /*** end of file ***/
