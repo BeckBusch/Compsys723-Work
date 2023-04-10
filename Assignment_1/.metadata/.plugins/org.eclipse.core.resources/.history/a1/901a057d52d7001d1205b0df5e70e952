@@ -77,6 +77,12 @@
 
 #include "system.h"
 
+/* Altera library includes. */
+#include "alt_timers.h"
+#include "alt_interrupt.h"
+#include "alt_globaltmr.h"
+
+
 /*-----------------------------------------------------------
  * Application specific definitions.
  *

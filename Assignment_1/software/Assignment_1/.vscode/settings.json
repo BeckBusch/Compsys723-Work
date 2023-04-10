@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        ".sysj": "SystemJ",
+        "altera_up_avalon_video_pixel_buffer_dma.h": "c",
+        "altera_avalon_pio_regs.h": "c",
+        "freertos.h": "c",
+        "event_groups.h": "c"
+    },
+    "cSpell.words": [
+        "ANALYSER"
+    ]
+}
