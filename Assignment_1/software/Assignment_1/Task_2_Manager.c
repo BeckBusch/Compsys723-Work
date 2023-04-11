@@ -1,6 +1,6 @@
 #include "Task_2.h"
 
-#define loadCount 6
+#define loadCount 8
 
 #define mantState 3
 #define waitState 1
@@ -12,14 +12,15 @@
 #define unstable 0
 #define stable 1
 
-int newStability, loadStatus[loadCount], fsmState, switchInput, currentStability, greenLedOutput, redLedOutput, switchState[loadCount];
-int finishTickOutput;
+int loadStatus[loadCount] ={1, 1, 1, 1, 1, 1, 1, 1      };
+int fsmState, newStability, currentStability, finishTickOutput, maintenanceState;
+int switchInput, switchEffect; greenLedOutput, redLedOutput, switchState[loadCount];
 
 void manageLoads(int manageAction);
 void manageTimerCallback(xTimerHandle manageTimer);
 
 void manageTimerCallback(xTimerHandle manageTimer) {
-    // if the timer ends and current stability is unstable, we are sheding loads
+    // if the timer ends and current stability is unstable, we are shedding loads
     if (currentStability == unstable) {
         manageLoads(actionShed);
         xTimerReset(manageTimer, 0); // restart the timer
@@ -34,7 +35,7 @@ void manageTimerCallback(xTimerHandle manageTimer) {
 }
 
 void manageLoads(int manageAction) {
-    if (manageAction == actionShed) { // we are sheding a load
+    if (manageAction == actionShed) { // we are shedding a load
         for (int i = 0; i < loadCount; i++) { // iterate through the loads, starting at the lowest prio
             if (loadStatus[i] == 1) { // if the load is on, 
                 loadStatus[i] = 0; // turn the load off
@@ -54,6 +55,7 @@ void manageLoads(int manageAction) {
 void task_2_Manager(void* pvParameters) {
     fsmState = waitState;
     currentStability = stable;
+    maintenanceState = 0; // TODO: make this actually work form a button
 
     while (1) {
         xQueuePeek(stableStatusQueue, &newStability, (TickType_t)0);
@@ -61,7 +63,10 @@ void task_2_Manager(void* pvParameters) {
 
 
         if (fsmState == waitState) { // we are not managing loads, and waiting for a change in stability
+            switchEffect = switchInput; // since we are not managing loads, the switches can have an effect
+
             if (newStability == unstable) { // if the system goes unstable
+            //TODO: allow user to turn load off during managment
                 manageLoads(actionShed); // shed one load
                 finishTickOutput = xTaskGetTickCount();
                 //printf("finish tick %d\n", finishTickOutput);
@@ -69,6 +74,7 @@ void task_2_Manager(void* pvParameters) {
                 xTimerStart(manageTimer, 0); // start the 500ms countdown
                 currentStability = unstable; // save new stability
                 fsmState = manageState; // switch to management mode
+
             }
         } else if (fsmState == manageState) { // we are managing loads, resetting the timer if stability changes
             if (newStability != currentStability) { // if stability has changed
@@ -76,14 +82,15 @@ void task_2_Manager(void* pvParameters) {
                 currentStability = newStability; // save new stability
             }
         } else if (fsmState == mantState) {
-
+            switchEffect = switchInput; // since we are not managing loads, the switches can have an effect
         }
 
         redLedOutput = 0;
         greenLedOutput = 0;
         for (int i = 0; i < loadCount; i++) {
-            redLedOutput += ((loadStatus[i]) << i);
-            greenLedOutput += (loadStatus[i] << i);
+
+            redLedOutput += ((1 && (switchEffect & (1<<i))) << i); // load power
+            greenLedOutput += (!maintenanceState && (!loadStatus[i] << i)) << i; // relay forcing off
         }
         IOWR_ALTERA_AVALON_PIO_DATA(GREEN_LEDS_BASE, greenLedOutput);
         IOWR_ALTERA_AVALON_PIO_DATA(RED_LEDS_BASE, redLedOutput);

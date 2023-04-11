@@ -16,11 +16,9 @@ void freq_relay_ISR() {
 }
 
 void ps2_isr(void* ps2_device, alt_u32 id) {
-    //long lHigherPriorityTaskWoken = pdFALSE;
+    // long lHigherPriorityTaskWoken = pdFALSE;
     unsigned char key = 0;
-    //alt_up_ps2_read_data_byte_timeout(ps2_device, &byte);
     decode_scancode(ps2_device, NULL, &key, NULL);
-    printf("%x\n", key);
     // R: 52    E: 45    F: 46    D: 44
     switch (key) {
     case 0x2d: // Increase RoC Threshold
