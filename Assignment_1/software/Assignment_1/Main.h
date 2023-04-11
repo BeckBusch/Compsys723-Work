@@ -41,12 +41,14 @@ TaskHandle_t t3Handle;
 TaskHandle_t t4Handle;
 
 TimerHandle_t refreshTimer;
+TimerHandle_t manageTimer;
 
 QueueHandle_t statsQueue;
 QueueHandle_t threshQueue;
 QueueHandle_t freqQueue;
 QueueHandle_t freqDataQueue;
 QueueHandle_t stableStatusQueue;
+QueueHandle_t startTickQueue, finishTickQueue;
 
 #endif /* MAIN_H */
 /*** end of file ***/

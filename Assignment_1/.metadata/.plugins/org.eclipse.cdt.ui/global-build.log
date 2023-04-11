@@ -1,4 +1,3 @@
-00:19:33 **** Clean-only build of configuration Nios II for project Assignment_1 ****
+00:00:06 **** Clean-only build of configuration Nios II for project Assignment_1 ****
 make clean 
-rm: cannot remove 'Assignment_1.elf': Device or resource busy
-make: *** [clean] Error 1
+[Assignment_1 clean complete]

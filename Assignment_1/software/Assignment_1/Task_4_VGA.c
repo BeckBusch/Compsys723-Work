@@ -31,7 +31,7 @@ double valueArray[18] = { 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50
 double rocArray[18], freqDataInput[2];
 float thresholdReceiveArray[2];
 char outputBuffer[4];
-int tempTimeHours, tempTimeMin, tempROC, stableStatsInput, statsReceiveArray[4];
+int tempTimeHours, tempTimeMin, tempROC, timeStatCount, stableStatsInput, statsReceiveArray[8];
 
 int tickCountStart, tickCountEnd;
 
@@ -42,10 +42,6 @@ void refreshTimerCallback(xTimerHandle refreshTimer) {
 
 
 void task_4_VGA_Controller(void* pvParameters) {
-    //printf("VGA Controller Started\n");
-    // Init Task
-    //const TickType_t xDelay = 1000 / portTICK_PERIOD_MS;
-
     TickType_t xLastWakeTime;
     const TickType_t xFrequency = 250;
 
@@ -65,17 +61,7 @@ void task_4_VGA_Controller(void* pvParameters) {
     alt_up_char_buffer_clear(char_buf);
     alt_up_pixel_buffer_dma_draw_box(pixel_buf, 0, 0, 640, 480, ColorBlack, 0); // Black Background
 
-    /*    Testing bars
-    for (int i = 0; i < 80; i++) {
-        alt_up_pixel_buffer_dma_draw_vline(pixel_buf, i * 8, 0, 480, ColorCyan, 0);
-    }
-    for (int i = 0; i < 60; i++) {
-        alt_up_pixel_buffer_dma_draw_hline(pixel_buf, 0, 640, i * 8, ColorCyan, 0);
-    }
-    alt_up_pixel_buffer_dma_draw_rectangle(pixel_buf, 20, 20, 640 - 20, 280, ColorRed, 0); // Red Top
-    alt_up_pixel_buffer_dma_draw_rectangle(pixel_buf, 20, 280, 640 - 20, 480 - 20, ColorRed, 0); // Red Bottom
-
-    */alt_up_pixel_buffer_dma_draw_rectangle(pixel_buf, 0, 0, 639, 479, ColorRed, 0);
+    alt_up_pixel_buffer_dma_draw_rectangle(pixel_buf, 0, 0, 639, 479, ColorRed, 0);
 
     // Draw Freq/Time Graph
     alt_up_pixel_buffer_dma_draw_vline(pixel_buf, GraphXStart, FreqYStart, FreqYEnd, ColorWhite, 0); // Black Freq Y axis
@@ -115,17 +101,16 @@ void task_4_VGA_Controller(void* pvParameters) {
     alt_up_char_buffer_string(char_buf, "Min Time:", SecondColStart, ThirdRowHeight);
     alt_up_char_buffer_string(char_buf, "Display Refreshed @ 4Hz", ThirdColStart, FourthRowHeight);
 
-    //alt_up_pixel_buffer_dma_draw_rectangle(pixel_buf, 20, 20, 640-20, 480-20, ColorRed, 0); // Red Border
-    //alt_up_char_buffer_draw(char_buf, '!', 51, 30);
-
     while (1) {
-        // Initialise the xLastWakeTime variable with the current time.
-        //xLastWakeTime = xTaskGetTickCount();
-
         xQueuePeek(statsQueue, &statsReceiveArray, (TickType_t)0); // total, max, min, average
+        printf("%d\n", statsReceiveArray[0]);
         xQueuePeek(freqDataQueue, &freqDataInput, (TickType_t)0); // Freq and roc
         xQueuePeek(threshQueue, &thresholdReceiveArray, (TickType_t)0); // freq and roc thresh
         xQueuePeek(stableStatusQueue, &stableStatsInput, (TickType_t)0); // stability
+
+        timeStatCount = xTaskGetTickCount() / configTICK_RATE_HZ;
+        printf("TOTAL TIME: %d\n", timeStatCount);
+        printf("TOTAL TIME: %d\n", timeStatCount);
 
         for (int i = 17; i > 0; i--) {
             valueArray[i] = valueArray[i - 1];
@@ -134,7 +119,10 @@ void task_4_VGA_Controller(void* pvParameters) {
         for (int i = 17; i > 0; i--) {
             rocArray[i] = rocArray[i - 1];
         }
+        printf("TOTAL TIME: %d\n", timeStatCount);
+
         rocArray[0] = freqDataInput[1];
+                printf("TOTAL TIME: %d\n", timeStatCount);
 
         for (int i = 0; i < 17; i++) {
             int tempStart = GraphXEnd - 25 - i * 26;
@@ -143,6 +131,7 @@ void task_4_VGA_Controller(void* pvParameters) {
             alt_up_pixel_buffer_dma_draw_box(pixel_buf, tempStart, FreqYStart + 1, tempStart + 26, FreqYEnd - 1, ColorBlack, 0);
             alt_up_pixel_buffer_dma_draw_line(pixel_buf, tempStart, tempY2, tempStart + 26, tempY, ColorBlue, 0);
         }
+        printf("TOTAL TIME: %d\n", timeStatCount);
 
         for (int i = 0; i < 17; i++) {
             int tempStart = GraphXEnd - 25 - i * 26;
@@ -160,45 +149,49 @@ void task_4_VGA_Controller(void* pvParameters) {
             alt_up_char_buffer_string(char_buf, "UnStable", FirstColStart + 15, FirstRowHeight);
             alt_up_pixel_buffer_dma_draw_box(pixel_buf, (FirstColStart + 15) * 8 - 5, FirstRowHeight * 8 - 5, (FirstColStart + 23) * 8 + 4, (FirstRowHeight + 1) * 8 + 4, ColorRed, 0);
         }
+        printf("TOTAL TIME: %d\n", timeStatCount);
 
         // Live frequency
         sprintf(outputBuffer, "%6.3f Hz", freqDataInput[0]);
         alt_up_char_buffer_string(char_buf, outputBuffer, 69, 11);
+        printf("TOTAL TIME: %d\n", timeStatCount);
         // Live RoC
         sprintf(outputBuffer, "%d Hz/Sec   ", (int)freqDataInput[1]);
         alt_up_char_buffer_string(char_buf, outputBuffer, 69, RoCTextStart + 7);
+        printf("TOTAL TIME: %d\n", timeStatCount);
         // Freq Threshold
         sprintf(outputBuffer, "%4.1f Hz", thresholdReceiveArray[0]);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 16, SecRowHeight);
         //RoC threshold
         sprintf(outputBuffer, "%3.1f Hz/Sec", thresholdReceiveArray[1]);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 15, ThirdRowHeight);
+        printf("TOTAL TIME: %d\n", timeStatCount);
         // Total Hours
-        tempTimeHours = statsReceiveArray[0] / 3600;
+        tempTimeHours = timeStatCount / 3600;
+        printf("hours: %d\n", tempTimeHours);
         sprintf(outputBuffer, "%02d", tempTimeHours);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 19, FourthRowHeight);
         // Total Min
-        tempTimeMin = (statsReceiveArray[0] - (3600 * tempTimeHours)) / 60;
+        tempTimeMin = (timeStatCount - (3600 * tempTimeHours)) / 60;
+        printf("min: %d\n", tempTimeMin);
         sprintf(outputBuffer, "%02d", tempTimeMin);
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 22, FourthRowHeight);
         // Total sec
-        sprintf(outputBuffer, "%02d", (statsReceiveArray[0] - (3600 * tempTimeHours) - (60 * tempTimeMin)));
+        sprintf(outputBuffer, "%02d", (timeStatCount - (3600 * tempTimeHours) - (60 * tempTimeMin)));
         alt_up_char_buffer_string(char_buf, outputBuffer, FirstColStart + 25, FourthRowHeight);
         // Average time
-        sprintf(outputBuffer, "%03d ms", statsReceiveArray[1]);
+        sprintf(outputBuffer, "%03d ms", statsReceiveArray[0]);
         alt_up_char_buffer_string(char_buf, outputBuffer, SecondColStart + 14, FirstRowHeight);
         // Max time
-        sprintf(outputBuffer, "%03d ms", statsReceiveArray[2]);
+        sprintf(outputBuffer, "%03d ms", statsReceiveArray[1]);
         alt_up_char_buffer_string(char_buf, outputBuffer, SecondColStart + 10, SecRowHeight);
         // Min time
-        sprintf(outputBuffer, "%03d ms", statsReceiveArray[3]);
+        sprintf(outputBuffer, "%03d ms", statsReceiveArray[2]);
         alt_up_char_buffer_string(char_buf, outputBuffer, SecondColStart + 10, ThirdRowHeight);
 
 
-        //tickCountEnd = (xTaskGetTickCount() - tickCountStart);
         //printf("VGA Completed in %f Seconds\n", (float)tickCountEnd/configTICK_RATE_HZ);
         vTaskSuspend(t4Handle);
-        //vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }
 

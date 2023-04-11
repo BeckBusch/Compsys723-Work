@@ -9,6 +9,7 @@
 #include "Main.h"
 
 void task_4_VGA_Controller(void* pvParameters);
+void refreshTimerCallback(xTimerHandle refreshTimer);
 
 #endif /* TASK_4_H */
 /*** end of file ***/

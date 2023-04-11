@@ -8,9 +8,8 @@
 
 #include "Main.h"
 
-// Stability Bool, Freq Thresh x10, RoC Thresh x10, total time in seconds, average time in ms, max time in ms, min time in ms
-int statsMessage[4];
-void refreshTimerCallback(xTimerHandle refreshTimer);
+// total time in seconds, average time in ms, max time in ms, min time in ms, 5 recent values
+int statsMessage[8];
 void task_3_Tracker(void* pvParameters);
 TickType_t startTickTime;
 

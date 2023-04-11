@@ -1,10 +1,11 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "nios",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\intelFPGA_lite\\18.1\\nios2eds\\bin\\gnu\\H-x86_64-mingw32\\nios2-elf\\include"
+                "C:\\intelFPGA_lite\\18.1\\nios2eds\\bin\\gnu\\H-x86_64-mingw32\\nios2-elf\\include",
+                "..\\Assignment_1_bsp\\**"
             ],
             "defines": [
                 "_DEBUG",
@@ -12,10 +13,10 @@
                 "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.22000.0",
-            "compilerPath": "cl.exe",
+            "compilerPath": "C:\\intelFPGA_lite\\18.1\\nios2eds\\bin\\gnu\\H-x86_64-mingw32\\bin\\nios2-elf-gcc.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "windows-msvc-x64",
+            "intelliSenseMode": "windows-gcc-arm",
             "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],

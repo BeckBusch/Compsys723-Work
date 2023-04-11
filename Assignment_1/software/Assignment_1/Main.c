@@ -23,6 +23,9 @@ TaskHandle_t t3Handle = NULL;
 TaskHandle_t t4Handle = NULL;
 
 int main(void) {
+	startTickQueue = xQueueCreate(1, sizeof(int));
+	finishTickQueue = xQueueCreate(1, sizeof(int));
+
 	startTickTime = xTaskGetTickCount();
 	alt_up_ps2_dev* ps2_device = alt_up_ps2_open_dev(PS2_NAME);
 
@@ -42,13 +45,14 @@ int main(void) {
 	statsQueue = xQueueCreate(1, sizeof(statsMessage));
 	stableStatusQueue = xQueueCreate(1, sizeof(stabilityOutput));
 
-	refreshTimer = xTimerCreate("Refresh Timer", vgaRefreshMs, pdTRUE, NULL, refreshTimerCallback);
+	refreshTimer = xTimerCreate("Refresh Timer", pdMS_TO_TICKS(vgaRefreshMs), pdTRUE, NULL, refreshTimerCallback);
 	if (xTimerStart(refreshTimer, 0) != pdPASS) {
 		printf("Cannot start timer");
 	}
+	manageTimer = xTimerCreate("Management Timer", pdMS_TO_TICKS(500), pdTRUE, NULL, manageTimerCallback);
 
 	xTaskCreate(task_1_Analyser, "Freq_Analyser", configMINIMAL_STACK_SIZE, NULL, task_1_PRIORITY, &t1Handle);
-	//xTaskCreate(task_2_Manager, "Load_Manager", configMINIMAL_STACK_SIZE, NULL, task_2_PRIORITY, &t2Handle);
+	xTaskCreate(task_2_Manager, "Load_Manager", configMINIMAL_STACK_SIZE, NULL, task_2_PRIORITY, &t2Handle);
 	xTaskCreate(task_3_Tracker, "Stats_Tracker", configMINIMAL_STACK_SIZE, NULL, task_3_PRIORITY, &t3Handle);
 	xTaskCreate(task_4_VGA_Controller, "VGA_Controller", configMINIMAL_STACK_SIZE, NULL, task_4_PRIORITY, &t4Handle);
 

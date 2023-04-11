@@ -9,6 +9,7 @@
 #include "Main.h"
 
 void task_2_Manager(void* pvParameters);
+void manageTimerCallback(xTimerHandle manageTimer);
 
 #endif /* TASK_2_H */
 /*** end of file ***/
