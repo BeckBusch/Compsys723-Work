@@ -32,7 +32,8 @@ double valueArray[18] = { 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50
 double rocArray[18], freqDataInput[2];
 float thresholdReceiveArray[2];
 char outputBuffer[4];
-int tempTimeHours, tempTimeMin, tempROC, timeStatCount, stableStatsInput, statsReceiveArray[8];
+int tempTimeHours, tempTimeMin, tempROC, timeStatCount, stableStatsInput;
+int statsReceiveArray[8] = {723, 723, 723, 723, 723, 723, 723, 723};
 
 int tickCountStart, tickCountEnd;
 
@@ -120,7 +121,11 @@ void task_4_VGA_Controller(void* pvParameters) {
             rocArray[i] = rocArray[i - 1];
         }
 
-        rocArray[0] = freqDataInput[1];
+        // This change calculates RoC based on the values coming into the VGA task every 250ms
+        // It looks better on the graph as it matches the freq graph, but the 
+        //rocArray[0] = freqDataInput[1];
+        rocArray[0] = (valueArray[0] - valueArray[1]) * 2.0 * valueArray[0] * valueArray[1] / (valueArray[0] + valueArray[1]);
+        printf("%f\n", rocArray[0]);
 
         for (int i = 0; i < 17; i++) {
             int tempStart = GraphXEnd - 25 - i * 26;
@@ -132,7 +137,7 @@ void task_4_VGA_Controller(void* pvParameters) {
 
         for (int i = 0; i < 17; i++) { // TODO: maybe some stuff about getting the largest roc in each refresh period
             int tempStart = GraphXEnd - 25 - i * 26;
-            double tempY = RoCYStart + 45 - (rocArray[i]) * 0.75;
+            double tempY = RoCYStart + 45 - (rocArray[i]) * 0.45; //0.75;
             alt_up_pixel_buffer_dma_draw_box(pixel_buf, tempStart, RoCYStart + 1, tempStart + 26, RocYEnd - 1, ColorBlack, 0);
             alt_up_pixel_buffer_dma_draw_box(pixel_buf, tempStart, RoCYStart + 45, tempStart + 26, tempY, ColorBlue, 0);
         }
@@ -163,7 +168,7 @@ void task_4_VGA_Controller(void* pvParameters) {
         sprintf(outputBuffer, "%6.3f Hz", freqDataInput[0]);
         alt_up_char_buffer_string(char_buf, outputBuffer, 69, 11);
         // Live RoC
-        sprintf(outputBuffer, "%d Hz/Sec   ", (int)freqDataInput[1]);
+        sprintf(outputBuffer, "%d Hz/Sec   ", (int)rocArray[0]);
         alt_up_char_buffer_string(char_buf, outputBuffer, 69, RoCTextStart + 7);
         // Freq Threshold
         sprintf(outputBuffer, "%4.1f Hz", thresholdReceiveArray[0]);

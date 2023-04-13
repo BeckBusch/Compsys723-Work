@@ -12,8 +12,8 @@
 #define unstable 0
 #define stable 1
 
-int loadStatus[loadCount] ={1, 1, 1, 1, 1, 1, 1, 1      };
-int fsmState, newStability, currentStability, finishTickOutput, maintenanceState;
+int loadStatus[loadCount] = { 1, 1, 1, 1, 1, 1, 1, 1 };
+int fsmState, newStability, currentStability, finishTickOutput, maintenanceState, timingFlag;
 int switchInput, switchEffect; greenLedOutput, redLedOutput, switchState[loadCount];
 
 void manageLoads(int manageAction);
@@ -52,25 +52,38 @@ void manageLoads(int manageAction) {
     }
 }
 
+void button_interrupts_function(void* context, alt_u32 id) {
+    int* temp = (int*)context;
+    (*temp) = IORD_ALTERA_AVALON_PIO_EDGE_CAP(PUSH_BUTTON_BASE);
+    printf("bing %d\n", maintenanceState);
+    maintenanceState = !maintenanceState;
+
+    IOWR_ALTERA_AVALON_PIO_EDGE_CAP(PUSH_BUTTON_BASE, 0x7);
+}
+
 void task_2_Manager(void* pvParameters) {
     fsmState = waitState;
     currentStability = stable;
-    maintenanceState = 0; // TODO: make this actually work form a button
+    maintenanceState = 0; 
+
+    int buttonValue = 0;
+    IOWR_ALTERA_AVALON_PIO_EDGE_CAP(PUSH_BUTTON_BASE, 0x4);
+    IOWR_ALTERA_AVALON_PIO_IRQ_MASK(PUSH_BUTTON_BASE, 0x4);
+    alt_irq_register(PUSH_BUTTON_IRQ, (void*)&buttonValue, button_interrupts_function);
 
     while (1) {
         xQueuePeek(stableStatusQueue, &newStability, (TickType_t)0);
         switchInput = IORD_ALTERA_AVALON_PIO_DATA(SLIDE_SWITCH_BASE);
 
-
         if (fsmState == waitState) { // we are not managing loads, and waiting for a change in stability
             switchEffect = switchInput; // since we are not managing loads, the switches can have an effect
 
             if (newStability == unstable) { // if the system goes unstable
-            //TODO: allow user to turn load off during managment
                 manageLoads(actionShed); // shed one load
-                finishTickOutput = xTaskGetTickCount();
-                //printf("finish tick %d\n", finishTickOutput);
-                xQueueOverwrite(finishTickQueue, &finishTickOutput);
+                /*finishTickOutput = xTaskGetTickCount(); // moving timing stop to led change as that is the actual output
+                //printf("end timing tick: %d\n", finishTickOutput); // PRINTER: end timing tick
+                xQueueOverwrite(finishTickQueue, &finishTickOutput);*/
+                timingFlag = 1;
                 xTimerStart(manageTimer, 0); // start the 500ms countdown
                 currentStability = unstable; // save new stability
                 fsmState = manageState; // switch to management mode
@@ -81,17 +94,35 @@ void task_2_Manager(void* pvParameters) {
                 xTimerReset(manageTimer, 0); // restart the timer
                 currentStability = newStability; // save new stability
             }
+            // during the management state, we can alter the input from switches only to turn a switch off
+            for (int i = 0; i < 8; i++) {
+                if (!(switchInput & (1 << i))) {
+                    switchEffect = (switchEffect & ~(1 << i));
+                }
+            }
+
         } else if (fsmState == mantState) {
             switchEffect = switchInput; // since we are not managing loads, the switches can have an effect
         }
 
         redLedOutput = 0;
         greenLedOutput = 0;
-        for (int i = 0; i < loadCount; i++) {
-
-            redLedOutput += ((1 && (switchEffect & (1<<i))) << i); // load power
-            greenLedOutput += (!maintenanceState && (!loadStatus[i] << i)) << i; // relay forcing off
+        if (maintenanceState) {
+            redLedOutput = switchInput & 0b11111111;
+        } else {
+            for (int i = 0; i < loadCount; i++) {
+                redLedOutput += ((1 && (switchEffect & (loadStatus[i] << i))) << i); // load power
+                greenLedOutput += (!maintenanceState && (!loadStatus[i] << i)) << i; // relay forcing off
+            }
         }
+
+        if (timingFlag) {
+            finishTickOutput = xTaskGetTickCount();
+            //printf("end timing tick: %d\n", finishTickOutput); // PRINTER: end timing tick
+            xQueueOverwrite(finishTickQueue, &finishTickOutput);
+            timingFlag = 0;
+        }
+
         IOWR_ALTERA_AVALON_PIO_DATA(GREEN_LEDS_BASE, greenLedOutput);
         IOWR_ALTERA_AVALON_PIO_DATA(RED_LEDS_BASE, redLedOutput);
 
