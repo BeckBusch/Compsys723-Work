@@ -55,7 +55,7 @@ void manageLoads(int manageAction) {
 void button_interrupts_function(void* context, alt_u32 id) {
     int* temp = (int*)context;
     (*temp) = IORD_ALTERA_AVALON_PIO_EDGE_CAP(PUSH_BUTTON_BASE);
-    printf("bing %d\n", maintenanceState);
+    //printf("bing %d\n", maintenanceState);
     maintenanceState = !maintenanceState;
 
     IOWR_ALTERA_AVALON_PIO_EDGE_CAP(PUSH_BUTTON_BASE, 0x7);
@@ -64,7 +64,7 @@ void button_interrupts_function(void* context, alt_u32 id) {
 void task_2_Manager(void* pvParameters) {
     fsmState = waitState;
     currentStability = stable;
-    maintenanceState = 0; 
+    maintenanceState = 0;
 
     int buttonValue = 0;
     IOWR_ALTERA_AVALON_PIO_EDGE_CAP(PUSH_BUTTON_BASE, 0x4);
@@ -122,6 +122,32 @@ void task_2_Manager(void* pvParameters) {
             xQueueOverwrite(finishTickQueue, &finishTickOutput);
             timingFlag = 0;
         }
+
+        alt_up_char_buffer_dev* char_buf;
+         char_buf = alt_up_char_buffer_open_dev("/dev/video_character_buffer_with_dma");
+
+        switch (fsmState) {
+        case waitState:
+            alt_up_char_buffer_string(char_buf, "System Status: Waiting  ", 25, 4);
+            break;
+        case manageState:
+            alt_up_char_buffer_string(char_buf, "System Status: Managing ", 25, 4);
+            break;
+        case mantState:
+            alt_up_char_buffer_string(char_buf, "System Status: Maintence", 25, 4);
+            break;
+        }
+
+        for (int i = 0; i < 8; i++) {
+            if (redLedOutput & (1 << i)) {
+                alt_up_char_buffer_string(char_buf, "X", 39 + i * 4, 6);
+            } else {
+                alt_up_char_buffer_string(char_buf, " ", 39 + i * 4, 6);
+            }
+
+        }
+
+        //Maintence Stable Managing
 
         IOWR_ALTERA_AVALON_PIO_DATA(GREEN_LEDS_BASE, greenLedOutput);
         IOWR_ALTERA_AVALON_PIO_DATA(RED_LEDS_BASE, redLedOutput);

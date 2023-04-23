@@ -6,9 +6,6 @@
 	<section name="">
 		<item value="1000" key="org.eclipse.search.resultpage.limit"/>
 	</section>
-	<section name="">
-		<item value="1000" key="org.eclipse.search.resultpage.limit"/>
-	</section>
 	<section name="TextSearchPage">
 		<item value="3" key="HISTORY_SIZE"/>
 		<item value="false" key="CASE_SENSITIVE"/>
@@ -73,6 +70,9 @@
 			<item value="org.eclipse.cdt.ui.pdomSearchPage"/>
 			<item value="org.eclipse.egit.ui.commitSearchPage"/>
 		</list>
+	</section>
+	<section name="org.eclipse.cdt.ui.pdomSearchViewPage">
+		<item value="true" key="showEnclosingDefinitions"/>
 	</section>
 	<section name="SearchDialog">
 		<item value="org.eclipse.search.internal.ui.text.TextSearchPage" key="PREVIOUS_PAGE"/>

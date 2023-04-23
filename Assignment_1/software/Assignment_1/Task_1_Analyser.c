@@ -1,6 +1,6 @@
 #include "Task_1.h"
 
-float RoCThreshold, FreqThreshold;
+float RoCThreshold, FreqThreshold, RoCSaved, FreqSaved;
 int tempFreqValue, curStabBool, startTickOutput;
 double curFreqValue, lastFreqValue, rocValue;
 
@@ -47,19 +47,23 @@ void task_1_Analyser(void* pvParameters) {
     while (1) {
         xQueueReceive(freqQueue, &tempFreqValue, (TickType_t)30); // pause task awaiting new freq value
 
+        RoCSaved = RoCThreshold; // saving the threshold values so they aren't changed during the running of this task
+        FreqSaved = FreqThreshold;
+
+
         curFreqValue = 16000.0 / (double)tempFreqValue;
 
-        //rocValue = (curFreqValue - lastFreqValue) * 2.0 * curFreqValue * lastFreqValue / (curFreqValue + lastFreqValue);
+        rocValue = (curFreqValue - lastFreqValue) * 2.0 * curFreqValue * lastFreqValue / (curFreqValue + lastFreqValue);
 
         freqDataOutput[0] = curFreqValue;
         freqDataOutput[1] = rocValue;
         xQueueOverwrite(freqDataQueue, &freqDataOutput);
 
-        thresholdSendArray[0] = FreqThreshold;
-        thresholdSendArray[1] = RoCThreshold;
+        thresholdSendArray[0] = FreqSaved;
+        thresholdSendArray[1] = RoCSaved;
         xQueueOverwrite(threshQueue, &thresholdSendArray);
 
-        if ((curFreqValue < FreqThreshold) || (rocValue > RoCThreshold)) {
+        if ((curFreqValue < FreqSaved) || (rocValue > RoCSaved)) {
             curStabBool = 0;
         } else {
             curStabBool = 1;

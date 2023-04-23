@@ -33,7 +33,7 @@ double rocArray[18], freqDataInput[2];
 float thresholdReceiveArray[2];
 char outputBuffer[4];
 int tempTimeHours, tempTimeMin, tempROC, timeStatCount, stableStatsInput;
-int statsReceiveArray[8] = {723, 723, 723, 723, 723, 723, 723, 723};
+int statsReceiveArray[8] = { 723, 723, 723, 723, 723, 723, 723, 723 };
 
 int tickCountStart, tickCountEnd;
 
@@ -88,11 +88,11 @@ void task_4_VGA_Controller(void* pvParameters) {
     }
     alt_up_char_buffer_string(char_buf, " -4 Sec       -3 Sec       -2 Sec        -1 Sec        0 Sec", 12, RoCTextStart + 14);
     alt_up_char_buffer_string(char_buf, "Rate of Change (dF/dt Hz/S)", 3, RoCTextStart);
-    alt_up_char_buffer_string(char_buf, "+60", 10 - 3, RoCTextStart + 3);
-    alt_up_char_buffer_string(char_buf, "+30", 10 - 3, RoCTextStart + 5); // the whole 10-1 thing is about moving the start back
+    alt_up_char_buffer_string(char_buf, "+100", 10 - 3, RoCTextStart + 3);
+    alt_up_char_buffer_string(char_buf, "+50", 10 - 3, RoCTextStart + 5); // the whole 10-1 thing is about moving the start back
     alt_up_char_buffer_string(char_buf, "0", 10 - 1, RoCTextStart + 8); // based on the number of digits in the number
-    alt_up_char_buffer_string(char_buf, "-30", 10 - 3, RoCTextStart + 10);
-    alt_up_char_buffer_string(char_buf, "-60", 10 - 3, RoCTextStart + 13);
+    alt_up_char_buffer_string(char_buf, "-50", 10 - 3, RoCTextStart + 10);
+    alt_up_char_buffer_string(char_buf, "-100", 10 - 3, RoCTextStart + 13);
 
     alt_up_char_buffer_string(char_buf, "System Status:", FirstColStart, FirstRowHeight);
     alt_up_char_buffer_string(char_buf, "Freq Threshold:", FirstColStart, SecRowHeight);
@@ -104,6 +104,9 @@ void task_4_VGA_Controller(void* pvParameters) {
     alt_up_char_buffer_string(char_buf, "Display Refreshed @ 4Hz", FirstColStart, SixthRowHeight);
 
     alt_up_char_buffer_string(char_buf, "Last 5 Values:", ThirdColStart, FirstRowHeight);
+
+    alt_up_char_buffer_string(char_buf, "System Status:          ", 25, 4);
+    alt_up_char_buffer_string(char_buf, "Load Status: [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]", 25, 6);
 
     while (1) { // TODO: add some vga stuff that shows the management state and current load management
         xQueuePeek(statsQueue, &statsReceiveArray, (TickType_t)0); // total, max, min, average
@@ -125,7 +128,6 @@ void task_4_VGA_Controller(void* pvParameters) {
         // It looks better on the graph as it matches the freq graph, but the 
         //rocArray[0] = freqDataInput[1];
         rocArray[0] = (valueArray[0] - valueArray[1]) * 2.0 * valueArray[0] * valueArray[1] / (valueArray[0] + valueArray[1]);
-        printf("%f\n", rocArray[0]);
 
         for (int i = 0; i < 17; i++) {
             int tempStart = GraphXEnd - 25 - i * 26;
