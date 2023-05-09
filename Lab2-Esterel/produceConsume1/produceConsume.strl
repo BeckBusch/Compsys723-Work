@@ -1,0 +1,46 @@
+module produceConsume:
+
+%Version 1 of producer consumer
+%Is it going to produce the correct count value?
+%declarations of data-handling functions in C
+procedure send()(integer);
+procedure recv1(string)();
+function outCount(): integer;
+
+%interface declarations
+input svalue := 1: integer;
+output message: string;
+output count: integer;
+
+
+[
+%consumer thread
+loop
+	var data: string in	
+		await tick;
+		emit message("waiting another tick");
+		await tick;		
+		pause;
+		call recv1(data)();
+		%data := "My message";
+		emit message(data);
+	end var
+end loop
+]
+||
+[
+%thread emitting the current count value
+loop
+	pause;
+	emit count(outCount());
+end loop
+]
+||
+[
+%producer thread
+loop
+	await svalue;
+	call send()(?svalue);
+end loop
+]
+end module

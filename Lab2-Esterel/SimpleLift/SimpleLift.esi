@@ -1,0 +1,147 @@
+;
+% Outputs: MotorDirectionIdle1 PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0000") DoorOpen
+%
+UpCall="0010" DownCall="0010" ;
+% Outputs: PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") CurrentPriority1("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") MotorDirectionIdle1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") MotorDirectionUp1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+FloorSensor1="2" ;
+% Outputs: PendingReq1("0010") MotorDirectionUp1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0000") MotorDirectionIdle1 StoppedAtFloor1("2") StartTimer PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0000") DoorOpen
+%
+TimerExpired CabinCall="0001" ;
+% Outputs: StoppedAtFloor1("2") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0001") DoorClose
+%
+;
+% Outputs: PendingReq1("0011") CurrentPriority1("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0011")
+%
+;
+% Outputs: PendingReq1("0011") requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0011")
+%
+;
+% Outputs: PendingReq1("0011") requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0011")
+%
+;
+% Outputs: PendingReq1("0011") MotorDirectionIdle1 requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0011")
+%
+;
+% Outputs: PendingReq1("0011") MotorDirectionUp1 requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0011")
+%
+FloorSensor1="3" ;
+% Outputs: PendingReq1("0011") MotorDirectionUp1 requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0011")
+%
+;
+% Outputs: PendingReq1("0010") CurrentPriority1("2") MotorDirectionIdle1 StoppedAtFloor1("3") StartTimer PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0010") PendingCall("0010") DoorOpen
+%
+TimerExpired UpCall="0010" ;
+% Outputs: PendingReq1("0010") StoppedAtFloor1("3") requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010") DoorClose
+%
+;
+% Outputs: PendingReq1("0010") requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") MotorDirectionIdle1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") MotorDirectionDown1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+FloorSensor1="2" ;
+% Outputs: PendingReq1("0010") MotorDirectionDown1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0010") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0000") MotorDirectionIdle1 StoppedAtFloor1("2") StartTimer PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("0000") DoorOpen
+%
+TimerExpired CabinCall="1000" ;
+% Outputs: StoppedAtFloor1("2") PendingCabinCall("1000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("1000") DoorClose
+%
+;
+% Outputs: PendingReq1("1010") CurrentPriority1("0") PendingCabinCall("1000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("1010")
+%
+;
+% Outputs: PendingReq1("1010") requestOut("0") PendingCabinCall("1000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("1010")
+%
+;
+% Outputs: PendingReq1("1010") requestOut("0") PendingCabinCall("1000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("1010")
+%
+;
+% Outputs: PendingReq1("1010") MotorDirectionIdle1 requestOut("0") PendingCabinCall("1000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("1010")
+%
+;
+% Outputs: PendingReq1("1010") MotorDirectionDown1 requestOut("0") PendingCabinCall("1000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("1010")
+%
+FloorSensor1="0" ;
+% Outputs: PendingReq1("1010") MotorDirectionDown1 requestOut("0") PendingCabinCall("1000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("1010")
+%
+;
+% Outputs: PendingReq1("0010") CurrentPriority1("2") MotorDirectionIdle1 StoppedAtFloor1("0") StartTimer PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("0010") DoorOpen
+%
+TimerExpired ;
+% Outputs: PendingReq1("0010") StoppedAtFloor1("0") requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("0010") DoorClose
+%
+;
+% Outputs: PendingReq1("0010") requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") MotorDirectionIdle1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0010") MotorDirectionUp1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("0010")
+%
+FloorSensor1="2" ;
+% Outputs: PendingReq1("0010") MotorDirectionUp1 requestOut("2") PendingCabinCall("0000") PendingUpCall("0010") PendingDownCall("0000") PendingCall("0010")
+%
+;
+% Outputs: PendingReq1("0000") MotorDirectionIdle1 StoppedAtFloor1("2") StartTimer PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0000") DoorOpen
+%
+TimerExpired CabinCall="0001" ;
+% Outputs: StoppedAtFloor1("2") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0001") DoorClose
+%
+;
+% Outputs: PendingReq1("0001") CurrentPriority1("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0001")
+%
+;
+% Outputs: PendingReq1("0001") requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0001")
+%
+;
+% Outputs: PendingReq1("0001") requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0001")
+%
+;
+% Outputs: PendingReq1("0001") MotorDirectionIdle1 requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0001")
+%
+;
+% Outputs: PendingReq1("0001") MotorDirectionUp1 requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0001")
+%
+FloorSensor1="3" ;
+% Outputs: PendingReq1("0001") MotorDirectionUp1 requestOut("3") PendingCabinCall("0001") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0001")
+%
+;
+% Outputs: PendingReq1("0000") MotorDirectionIdle1 StoppedAtFloor1("3") StartTimer PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0000") DoorOpen
+%
+TimerExpired ;
+% Outputs: StoppedAtFloor1("3") PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0000") DoorClose
+%
+;
+% Outputs: PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0000")
+%
+;
+% Outputs: PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0000")
+%
+;
+% Outputs: PendingCabinCall("0000") PendingUpCall("0000") PendingDownCall("0000") PendingCall("0000")
+%

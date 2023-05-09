@@ -1,0 +1,340 @@
+% Lift Controller design in Esterel
+% Authors: Partha S Roop
+%          Simon Yuan
+% Release date: 24 MAy 2011
+% Version-2
+% To do in future: environment constraints, exclusion relations and observers for verification
+% Also to check code coverage and generate test cases
+% Note - SimpleLift.esi scenerio file available for simulation
+% Changes: Converted to Esterel V5 syntax -- Simon
+
+% Warning: Design yet to be nicely tested!!
+
+
+% Lift controller specification based on Vahid's model
+% Lift has two concurrent modules - a UnitControl module that moves the car
+% and a RequestResolver module that takes in the user requests and passes a single request to the UnitControl module
+% Detailed design document on teaching drive
+
+% This module controls the operation of the motors and is responsible for
+% opening and closing of doors and stopping the cabin
+% It essentially encodes an FSM
+% See design document for FSM details
+% It also handshakes with Request resolver to read a request and also outputs when a request is serviced (using the StoppedAtFloor
+% valued signal
+module UnitControl:
+%constant N = 4 : integer;
+
+input FloorSensor: integer;
+
+% Mirrored SensorActuatorInterface
+output MotorDirectionUp;
+output MotorDirectionDown;
+output MotorDirectionIdle;
+output StoppedAtFloor : integer;
+input request : integer;
+
+% TimerInterface
+output StartTimer;
+input TimerExpired;
+
+% VisibleOutputsUC
+output DoorOpen;
+output DoorClose;
+
+% encoding of the states of an FSM performing control
+% state 1 = idle, state 2 = going up, state 4 = going down and state 3 equal to door open
+% Note the use of pre on request input to enable composition with request resolver
+% initial condition
+emit DoorOpen;
+emit MotorDirectionIdle;
+loop
+trap T1 in
+% Note the use of pre for achieving causal composition between the two modules
+await pre(request);
+var state := 1 : integer in
+loop
+    pause;
+    trap T2 in 
+    % await FloorSensor;
+            % Idle state request = FloorSensor
+            if state = 1 then
+                % emit DoorOpen;
+                emit MotorDirectionIdle;
+%                 pause;
+                if pre(?request) > ?FloorSensor then
+                    state := 2; exit T2;
+                end if;
+                if pre(?request) < ?FloorSensor then
+                    state := 4; exit T2;
+                end if;
+                exit T2; 
+            end if;
+            % Going Up State request > FloorSensor
+            if state = 2 then
+                emit MotorDirectionUp;
+%                 pause;
+                if pre(?request) = ?FloorSensor then
+                    state := 3; exit T2;
+                end if;
+                exit T2;
+            end if;
+            % Door open state
+            if state = 3 then
+            var currentFloor := 0 : integer in
+                emit MotorDirectionIdle;
+                emit DoorOpen;
+                emit StartTimer;
+                await TimerExpired;
+                emit DoorClose;
+                % emit ServiceDone;
+                exit T1;
+                % state:=1; exit T2;
+                ||
+                currentFloor := ?FloorSensor;
+                sustain StoppedAtFloor(currentFloor);
+             end var
+            end if;
+            % going down state
+            if state = 4 then
+                emit MotorDirectionDown;
+%                 pause;
+                if pre(?request) = ?FloorSensor then
+                    state := 3; exit T2;
+                end if;
+                exit T2;
+            end if;
+     end trap
+end loop
+end var
+end trap
+end loop
+end module
+
+% This module reads the call buttons and then determines the highest priority request
+% Call requests are sustained until they are serviced
+% The highest priority request is then passed to the UnitControl module for processing
+% A pending request is deactivated when lift arrives at the requested floor (StoppedAtFllor output from UnitControl)
+module RequestResolver:
+type BoolArray;
+constant initialBoolArray : BoolArray;
+
+input FloorSensor := 0 : integer;
+output PendingReq := initialBoolArray : BoolArray;
+output CurrentPriority := 0 : integer;
+
+procedure ResolvePriority(integer)(BoolArray, integer, integer);
+procedure send()(integer);
+procedure recv(integer)();
+procedure clearBit(BoolArray)(integer);
+function orArray(BoolArray) : boolean;
+function orArrays2(BoolArray, BoolArray) : BoolArray;
+function orArrays3(BoolArray, BoolArray, BoolArray) : BoolArray;
+
+% SensorActuatorInterface
+input MotorDirectionUp;
+input MotorDirectionDown;
+input MotorDirectionIdle;
+input StoppedAtFloor := 0 : integer;
+output request: integer;
+
+% ButtonInterface
+input CabinCall := initialBoolArray : BoolArray; % Buttons inside the cabin
+input UpCall := initialBoolArray : BoolArray;    % up call buttons at floors including afake one at floor N-1
+input DownCall := initialBoolArray : BoolArray;  % down call buttons at floors including fake one at floor 0
+
+% VisibleOutputsRequestResolver
+output PendingCabinCall := initialBoolArray : BoolArray;
+output PendingUpCall := initialBoolArray : BoolArray;
+output PendingDownCall := initialBoolArray : BoolArray;
+output PendingCall := initialBoolArray : BoolArray;
+
+output DoorOpen;
+output DoorClose;
+
+% The Pending Request Generator thread - this is adapted from G. Berry's elevator controller
+% thread reading and storing requests into pending requests
+
+loop
+    var calls : BoolArray in
+        calls := pre(?PendingCabinCall);
+        present CabinCall then
+            calls := orArrays2(?CabinCall, pre(?PendingCabinCall));
+        end present;
+        present StoppedAtFloor then
+            call clearBit(calls)(?StoppedAtFloor);
+        end present;
+        emit PendingCabinCall(calls);
+
+        calls := pre(?PendingUpCall);
+        present UpCall then
+            calls := orArrays2(?UpCall, pre(?PendingUpCall));
+        end present;
+        present StoppedAtFloor and pre(MotorDirectionUp) then
+            call clearBit(calls)(?StoppedAtFloor);
+        end present;
+        emit PendingUpCall(calls);
+
+        calls := pre(?PendingDownCall);
+        present DownCall then
+            calls := orArrays2(?DownCall, pre(?PendingDownCall));
+        end present;
+        present StoppedAtFloor and pre(MotorDirectionDown) then
+            call clearBit(calls)(?StoppedAtFloor);
+        end present;
+        emit PendingDownCall(calls);
+
+        calls := orArrays3(?PendingCabinCall, ?PendingUpCall, ?PendingDownCall);
+        present StoppedAtFloor then
+            call clearBit(calls)(?StoppedAtFloor);
+        end present;
+        emit PendingCall(calls);
+        pause
+    end var
+end loop
+||
+
+signal AbortPendingReq in
+loop
+    if orArray(pre(?PendingCall)) then
+        emit AbortPendingReq;
+    end if;
+    pause;
+end loop
+||
+loop
+    abort
+        sustain PendingReq(?PendingCall)
+    when immediate [ not AbortPendingReq ];
+    pause;
+end loop
+end signal
+||
+% The Highest Request Producer thread
+% thread deciding the highest priority request and putting it to the output queue for
+% concumption by the Request Consumer thread that passes successive requests to the UnitControl module
+var priority := 0 : integer, current := 0 : integer, direction := 1 : integer in
+% direction is by default up
+loop
+   pause;
+   % check the current Motor Direction
+    present
+        case MotorDirectionUp do
+            direction := 1;
+        case MotorDirectionDown do
+            direction := 2;
+        case MotorDirectionIdle do
+            direction := 3;
+    end present;
+    % Whenever there is a PendingRequest and this is a new request
+    % only if there is a different request that is not processed already - check this to avoid sending the same value
+    if orArray(?PendingReq) and not ?PendingReq = pre(?PendingReq) then
+        current := ?FloorSensor;
+        call ResolvePriority(priority)(?PendingReq, direction, current);
+        emit CurrentPriority(priority);
+        % priority is -1 implies that no new requests to process
+        % Resolve priority sets priority to value -1 when there is no new request to process
+        if not priority = -1 and not priority = pre(?CurrentPriority) then
+            call send()(priority);
+        end if;
+    end if
+end loop
+end var
+||
+% The Request Consumner thread
+% thread that consumes prioritized requests and forwards to UnitControl
+% This thread also synchronizes with UnitControl
+% Note that request is sustained since UnitControl shouldn't miss a request
+% Also note how a request is unsustained when UnitControl finishes servicing it
+pause;
+var highestPriority : integer in
+signal sigHighestPriority : integer in
+loop
+    trap restart in
+        signal FloorHasHighestPriority in
+            call recv(highestPriority)();
+%             loop
+                if ?StoppedAtFloor = highestPriority then
+                    emit FloorHasHighestPriority;
+                end if;
+                emit sigHighestPriority(highestPriority);
+                pause;
+%             end loop
+            ||
+            abort
+                if not (?sigHighestPriority = -100) then
+                    sustain request(?sigHighestPriority);
+                end if;
+%             when [ StoppedAtFloor and FloorHasHighestPriority ];
+            when DoorOpen;
+            pause;
+            exit restart
+        end signal
+    end trap
+end loop
+end signal
+end var
+end module
+
+
+% Top level module that runs the two modules in parallel
+% See how all environment signals in Figure 1 are made visible by declaring in the interface
+% See also how local signals between modules such as request are hidden
+% See also how using port mappings (signal renaming) modules are connected
+module SimpleLift:
+type BoolArray;
+constant initialBoolArray : BoolArray;
+
+input FloorSensor1 := 0 : integer;
+output PendingReq1 := initialBoolArray : BoolArray;
+output CurrentPriority1 : integer;
+output MotorDirectionUp1, MotorDirectionDown1, MotorDirectionIdle1;
+output StoppedAtFloor1 := 0 : integer;
+output requestOut : integer;
+
+% ButtonInterface
+input CabinCall := initialBoolArray : BoolArray; % Buttons inside the cabin
+input UpCall := initialBoolArray : BoolArray;    % up call buttons at floors including a fake one at floor N-1
+input DownCall := initialBoolArray : BoolArray;  % down call buttons at floors including a fake one at floor 0
+
+% TimerInterface
+output StartTimer;
+input TimerExpired;
+
+% VisibleOutputsRequestResolver
+output PendingCabinCall := initialBoolArray : BoolArray;
+output PendingUpCall := initialBoolArray : BoolArray;
+output PendingDownCall := initialBoolArray : BoolArray;
+output PendingCall := initialBoolArray : BoolArray;
+
+% VisibleOutputsUC
+output DoorOpen;
+output DoorClose;
+
+signal request: integer in
+loop
+    present request then
+        emit requestOut(?request);
+    end present;
+    pause
+end loop
+||
+run RequestResolver[ signal PendingReq1/PendingReq;
+                     signal CurrentPriority1/CurrentPriority;
+                     signal FloorSensor1/FloorSensor;
+                     signal MotorDirectionUp1/MotorDirectionUp;
+                     signal MotorDirectionDown1/MotorDirectionDown;
+                     signal MotorDirectionIdle1/MotorDirectionIdle;
+                     signal StoppedAtFloor1/StoppedAtFloor;
+                     signal request/request ]
+||
+run UnitControl[ signal FloorSensor1/FloorSensor;
+                 signal MotorDirectionUp1/MotorDirectionUp;
+                 signal MotorDirectionDown1/MotorDirectionDown;
+                 signal MotorDirectionIdle1/MotorDirectionIdle;
+                 signal StoppedAtFloor1/StoppedAtFloor;
+                 signal request/request ]
+end signal
+
+end module
+
