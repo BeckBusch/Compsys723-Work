@@ -1,0 +1,4 @@
+#!/bin/sh
+ESTEREL=/opt/esterelv6_01
+export ESTEREL
+exec /opt/esterelv6_01/bin/xes produceConsume.exe

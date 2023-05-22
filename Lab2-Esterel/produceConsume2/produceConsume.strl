@@ -1,0 +1,49 @@
+module produceConsume:
+
+%Version 2 - what has changed?
+%Will the count values be correct always?
+procedure send()(integer);
+procedure recv1(string)();
+function outCount(): integer;
+
+%Interface
+input svalue: integer;
+output message: string;
+output count: integer;
+
+%local signals for thread synchronization
+signal A, B in
+[
+%consumer thread
+loop
+	var data1: string in	
+		await [A or tick];
+		emit B;
+		emit message("waiting-another-tick");
+		await [A or tick];	
+		emit B;	
+		pause;
+		call recv1(data1)();
+		emit message(data1);
+		emit B;
+	end var
+end loop
+]
+||
+%Counter output thread
+loop
+	await [A or B];
+	emit count(outCount());
+end loop
+||
+[
+%producer thread
+loop
+	await svalue;
+	call send()(?svalue);
+	emit A;
+end loop
+]
+end signal
+
+end module

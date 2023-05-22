@@ -1,0 +1,45 @@
+module produceConsume:
+%Version 3 - lock step version
+
+%external declarations
+procedure send()(integer);
+procedure recv1(string)();
+function outCount(): integer;
+
+%Interface
+input svalue: integer;
+output message: string;
+output count: integer;
+
+%local signals
+signal A, B in
+[
+%%Consumer thread
+loop
+	var data1: string in	
+		await A;
+		emit B;
+		call recv1(data1)();
+		emit message(data1);
+	end var
+end loop
+]
+||
+%%Counter output thread
+loop
+	await B;
+	emit count(outCount());
+end loop
+||
+[
+%Producer thread
+loop
+	await svalue;
+	call send()(?svalue);
+	emit A;
+end loop
+]
+
+end signal
+
+end module
