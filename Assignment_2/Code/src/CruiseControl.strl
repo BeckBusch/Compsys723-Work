@@ -1,0 +1,30 @@
+% ===== Main Cruise Control Module =====
+module CruiseControlMain:
+
+% ===== Interface Inputs =====
+input On, Off;                  % Enable/Disable the cruise control
+input Resume;                   % Resume CC after braking
+input Set;                      % Set the CC speed to the current speed
+input QuickDecel, QuickAccel;   % Increase or decrease the CC speed
+input Accel : float;            % Accelerator pedal input
+input Brake : float;            % Brake pedal input
+input Speed : float;            % Car Speed input
+
+% ===== Interface Outputs =====
+output CruiseSpeed : float;     % Cruise speed value
+output ThrottleCmd : float;     % Throttle command
+output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:STDBY, 4:DISABLE
+
+end module
+
+module CruiseControlSystem:
+end module
+
+module CarDrivingControl:
+end module
+
+module CruiseSpeedManagment:
+end module
+
+module PedalDetection:
+end module
