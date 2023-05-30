@@ -17,8 +17,6 @@ output CruiseSpeed : float;     % Cruise speed value
 output ThrottleCmd : float;     % Throttle command
 output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:STDBY, 4:DISABLE
 
-signal AccelPressed in
-signal BrakePressed in
 signal state : integer in
 
 [loop
@@ -32,8 +30,6 @@ run CruiseControlSystem[
     signal On/On;
     signal Off/Off;
     signal Resume/Resume;
-    signal AccelPressed/AccelPressed;
-    signal BrakePressed/BrakePressed;
     signal Speed/Speed
 ]
 ||
@@ -52,14 +48,7 @@ run CruiseSpeedManagment[
     signal Set/Set;
     signal CruiseSpeed/CruiseSpeed
 ]
-||
-run PedalDetection[
-    signal Accel/Accel;
-    signal Brake/Brake
-]
 
-end signal
-end signal
 end signal
 end module
 
@@ -81,8 +70,9 @@ output CruiseSpeed : float;
 output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:STDBY, 4:DISABLE
 
 % speed
-constant SpeedMin = 30.0f : float;
-constant SpeedMax = 150.0f : float;
+constant SpeedMin : float;
+constant SpeedMax : float;
+constant PedalsMin : float;
 
 var state := 1 : integer in
 loop
@@ -106,17 +96,17 @@ loop
                 exit T2;
             end present;
 
-            if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (AccelPressed)) then
-                state := 2  % ON
+            if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (?Accel > PedalsMin)) then
+                state := 2;  % ON
                 exit T2;
             end if;
 
-            if (BrakePressed) then
+            if ((?Brake > PedalsMin)) then
                 state := 3; % STDBY
                 exit T2;
             end if;
 
-            if ((?Speed < SpeedMin) or (?Speed > SpeedMax) or (not AccelPressed))
+            if ((?Speed < SpeedMin) or (?Speed > SpeedMax) or not (?Accel > PedalsMin)) then
                 state := 4; % DISABLE
                 exit T2;
             end if;
@@ -127,13 +117,13 @@ loop
 
         % STDBY STATE
         if state = 3 then
-            present(off) then
+            present(Off) then
                 state := 1;  % OFF
                 exit T2;
             end present;
 
             present(Resume) then
-                if ((?Speed < SpeedMin) or (?Speed > SpeedMax) or (AccelPressed)) then
+                if ((?Speed < SpeedMin) or (?Speed > SpeedMax) or (?Accel > PedalsMin)) then
                     state := 4;  % DISABLE
                     exit T2;
                 end if;
@@ -145,17 +135,17 @@ loop
 
         % DISABLE STATE
         if state = 4 then
-            present(off) then
+            present(Off) then
                 state := 1;  % OFF
                 exit T2;    
             end present;
 
-            present (BrakePressed) then
+            if (?Brake > PedalsMin) then
                 state := 3;  % STDBY 
                 exit T2;
-            end present;
+            end if;
 
-            if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (not AccelPressed)) then
+            if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (not (?Accel > PedalsMin))) then
                 state := 2;  % ON
                 exit T2;
             end if;
@@ -193,7 +183,7 @@ loop
 
         % OFF to ON, use isGoing value of 0
         if ((?CruiseState = 2) and (pre(?CruiseState) = 1)) then
-            emit ThrottleCmd(0, ?CruiseSpeed, ?Speed);
+            emit ThrottleCmd(regulateThrottle(0, ?CruiseSpeed, ?Speed));
             exit T3;
         end if;
 
@@ -222,24 +212,24 @@ input Speed : float;
 output CruiseSpeed : float;
 
 % speed
-constant SpeedMin = 30.0f : float;
-constant SpeedMax = 150.0f : float;
-constant SpeedInc = 2.5f : float;
+constant SpeedMin : float;
+constant SpeedMax : float;
+constant SpeedInc : float;
 
-var newCruiseSpeed := 0.0 : float in
+var newCruiseSpeed := 0.0f : float in
 
 loop
-    emit CruiseSpeed(newSpeed);
+    emit CruiseSpeed(newCruiseSpeed);
     pause;
     trap T3 in
         % OFF state
         if (?CruiseState = 1) then
-            newCruiseSpeed := 0.0;
+            newCruiseSpeed := 0.0f;
             exit T3;
         else
             % set to the current speed
             present(Set) then
-                newCruiseSpeed := Speed;
+                newCruiseSpeed := ?Speed;
                 exit T3;
             end present;
 
@@ -261,26 +251,7 @@ loop
         end if;
     end trap
 end loop
+end var
 end module
 
 
-
-
-module PedalDetection:
-% used to detect pedal presses
-% inputs : Accel and Brake
-input Accel : float;
-input Brake : float;
-constant PedalMin = 3.0f : float;
-output AccelPressed, BrakePressed;
-
-loop
-    if (?Accel > PredalMin) then
-        emit AccelPressed
-    end if;
-
-    if (?Brake > PedalMin) then
-        emit BrakePressed
-    end if;
-end loop
-end module
