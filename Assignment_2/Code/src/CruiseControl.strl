@@ -19,8 +19,15 @@ output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:ST
 
 signal AccelPressed in
 signal BrakePressed in
-
 signal state : integer in
+
+[loop
+    present state then
+        emit CruiseState(?state);
+    end present;
+    pause
+end loop]
+||
 run CruiseControlSystem[
     signal On/On;
     signal Off/Off;
@@ -29,14 +36,14 @@ run CruiseControlSystem[
     signal BrakePressed/BrakePressed;
     siganl Speed/Speed
 ]
-
+||
 run CarDrivingControl[
     signal CruiseState/CruiseState;
     signal CruiseSpeed/CruiseSpeed;
     signal Accel/Accel;
     signal Speed/Speed;
 ]
-
+||
 run CruiseSpeedManagment[
     signal CruiseState/CruiseState;
     signal QuickAccel/QuickAccel;
@@ -45,12 +52,13 @@ run CruiseSpeedManagment[
     signal Set/Set;
     signal CruiseSpeed/CruiseSpeed
 ]
-
+||
 run PedalDetection[
     signal Accel/Accel;
     signal Brake/Brake
 ]
 
+end signal
 end signal
 end signal
 end module
