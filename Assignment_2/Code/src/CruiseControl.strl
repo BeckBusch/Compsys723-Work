@@ -10,7 +10,7 @@ input Accel : float;            % Accelerator pedal input
 input Brake : float;            % Brake pedal input
 input Speed : float;            % Car Speed input
 
-input AccelPressed, BrakePressed;   % input signals from PedalDetection module
+% input AccelPressed, BrakePressed;   % input signals from PedalDetection module
 
 % ===== Interface Outputs =====
 output CruiseSpeed : float;     % Cruise speed value
@@ -18,6 +18,11 @@ output ThrottleCmd : float;     % Throttle command
 output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:STDBY, 4:DISABLE
 
 signal state : integer in
+signal AccelPressed in
+signal BrakePressed in
+
+signal ValidSpeed in
+signal InvalidSpeed in
 
 [loop
     present state then
@@ -30,6 +35,8 @@ run CruiseControlSystem[
     signal On/On;
     signal Off/Off;
     signal Resume/Resume;
+    signal AccelPressed/AccelPressed;
+    signal BrakePressed/BrakePressed;
     signal Speed/Speed
 ]
 ||
@@ -48,7 +55,22 @@ run CruiseSpeedManagment[
     signal Set/Set;
     signal CruiseSpeed/CruiseSpeed
 ]
+||
+run PedalDetection[
+    signal Accel/Accel;
+    signal Brake/Brake
+]
+||
+run SpeedCheck[
+    signal Speed/Speed
+]
 
+
+end signal
+end signal
+
+end signal
+end signal
 end signal
 end module
 
@@ -61,9 +83,12 @@ input Resume;
 input Set;                     
 input Accel : float;            
 input Brake : float;            
-input Speed : float;           
+input Speed : float;     
+input QuickAccel;
+input QuickDecel;      
 
 input AccelPressed, BrakePressed;   % input signals from PedalDetection module
+input ValidSpeed, InvalidSpeed;
 
 % ===== Interface Outputs =====
 output CruiseSpeed : float;     
@@ -72,7 +97,6 @@ output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:ST
 % speed
 constant SpeedMin : float;
 constant SpeedMax : float;
-constant PedalsMin : float;
 
 var state := 1 : integer in
 loop
@@ -86,6 +110,11 @@ loop
                 state := 2; % ON STATE
                 exit T2;
             end present;
+
+            present(Off or Resume or Set or QuickAccel or QuickDecel or Brake) then
+                state := 1;
+                exit T2;
+            end present;
         end if;
 
 
@@ -96,20 +125,20 @@ loop
                 exit T2;
             end present;
 
-            if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (?Accel > PedalsMin)) then
+            present ((ValidSpeed) and (not AccelPressed)) then
                 state := 2;  % ON
                 exit T2;
-            end if;
+            end present;
 
-            if ((?Brake > PedalsMin)) then
+            present (BrakePressed) then
                 state := 3; % STDBY
                 exit T2;
-            end if;
+            end present;
 
-            if ((?Speed < SpeedMin) or (?Speed > SpeedMax) or not (?Accel > PedalsMin)) then
+            present ((InvalidSpeed) or (AccelPressed)) then
                 state := 4; % DISABLE
                 exit T2;
-            end if;
+            end present;
             exit T2;
 
         end if;
@@ -123,10 +152,10 @@ loop
             end present;
 
             present(Resume) then
-                if ((?Speed < SpeedMin) or (?Speed > SpeedMax) or (?Accel > PedalsMin)) then
+                present ((InvalidSpeed) or (AccelPressed)) then
                     state := 4;  % DISABLE
                     exit T2;
-                end if;
+                end present;
                 exit T2;
             end present;
 
@@ -140,15 +169,15 @@ loop
                 exit T2;    
             end present;
 
-            if (?Brake > PedalsMin) then
+            present (BrakePressed) then
                 state := 3;  % STDBY 
                 exit T2;
-            end if;
+            end present;
 
-            if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (not (?Accel > PedalsMin))) then
+            present ((ValidSpeed) and (not AccelPressed)) then
                 state := 2;  % ON
                 exit T2;
-            end if;
+            end present;
             exit T2;
 
         end if;
@@ -255,3 +284,45 @@ end var
 end module
 
 
+
+
+module PedalDetection:
+% used to detect pedal presses
+% inputs : Accel and Brake
+input Accel : float;
+input Brake : float;
+constant PedalMin = 3.0f : float;
+output AccelPressed, BrakePressed;
+
+loop
+pause;
+    if (?Accel > PedalMin) then
+        emit AccelPressed;
+    end if;
+
+    if (?Brake > PedalMin) then
+        emit BrakePressed;
+    end if;
+end loop
+end module
+
+
+module SpeedCheck:
+input Speed : float;
+constant SpeedMax : float;
+constant SpeedMin : float;
+
+output ValidSpeed, InvalidSpeed;
+
+loop
+pause;
+    if ((?Speed > SpeedMin) and (?Speed < SpeedMax)) then
+        emit ValidSpeed;
+    end if;
+
+    if ((?Speed < SpeedMin) or (?Speed > SpeedMax)) then
+        emit InvalidSpeed;
+    end if;
+
+end loop
+end module
