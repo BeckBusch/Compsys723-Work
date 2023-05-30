@@ -34,14 +34,14 @@ run CruiseControlSystem[
     signal Resume/Resume;
     signal AccelPressed/AccelPressed;
     signal BrakePressed/BrakePressed;
-    siganl Speed/Speed
+    signal Speed/Speed
 ]
 ||
 run CarDrivingControl[
     signal CruiseState/CruiseState;
     signal CruiseSpeed/CruiseSpeed;
     signal Accel/Accel;
-    signal Speed/Speed;
+    signal Speed/Speed
 ]
 ||
 run CruiseSpeedManagment[
@@ -109,7 +109,7 @@ loop
             if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (AccelPressed)) then
                 state := 2  % ON
                 exit T2;
-            enf if;
+            end if;
 
             if (BrakePressed) then
                 state := 3; % STDBY
@@ -128,13 +128,13 @@ loop
         % STDBY STATE
         if state = 3 then
             present(off) then
-                state = 1;  % OFF
+                state := 1;  % OFF
                 exit T2;
             end present;
 
             present(Resume) then
                 if ((?Speed < SpeedMin) or (?Speed > SpeedMax) or (AccelPressed)) then
-                    state = 4;  % DISABLE
+                    state := 4;  % DISABLE
                     exit T2;
                 end if;
                 exit T2;
@@ -146,17 +146,17 @@ loop
         % DISABLE STATE
         if state = 4 then
             present(off) then
-                state = 1;  % OFF
+                state := 1;  % OFF
                 exit T2;    
             end present;
 
             present (BrakePressed) then
-                state = 3;  % STDBY 
+                state := 3;  % STDBY 
                 exit T2;
             end present;
 
             if ((?Speed > SpeedMin) and (?Speed < SpeedMax) and (not AccelPressed)) then
-                state = 2;
+                state := 2;  % ON
                 exit T2;
             end if;
             exit T2;
@@ -234,7 +234,7 @@ loop
     trap T3 in
         % OFF state
         if (?CruiseState = 1) then
-            newCruiseSpeed = 0.0;
+            newCruiseSpeed := 0.0;
             exit T3;
         else
             % set to the current speed
