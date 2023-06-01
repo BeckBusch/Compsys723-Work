@@ -151,11 +151,13 @@ loop
                 exit T2;
             end present;
 
-            present(Resume) then
-                present ((InvalidSpeed) or (AccelPressed)) then
-                    state := 4;  % DISABLE
-                    exit T2;
-                end present;
+            present(Resume and ((InvalidSpeed) or (AccelPressed))) then
+                state := 4;  % DISABLE
+                exit T2;
+            end present;
+
+            present (Resume and ValidSpeed and (not AccelPressed)) then
+                state := 2; % ON
                 exit T2;
             end present;
 
@@ -208,20 +210,22 @@ loop
         if (?CruiseState = 1) then
             emit ThrottleCmd(?Accel);
             exit T3;
-        end if;
 
         % OFF to ON, use isGoing value of 0
-        if ((?CruiseState = 2) and (pre(?CruiseState) = 1)) then
+        elsif ((?CruiseState = 2) and (pre(?CruiseState) = 1)) then
             emit ThrottleCmd(regulateThrottle(0, ?CruiseSpeed, ?Speed));
             exit T3;
-        end if;
 
         % ON, speed automatically regulated, use isGoing value of 1
-        if (?CruiseState = 2) then
+        elsif (?CruiseState = 2) then
             emit ThrottleCmd(regulateThrottle(1, ?CruiseSpeed, ?Speed));
             exit T3;
+
+        % for all the other states STDBY and DISABLE, use Accel
+        else 
+            emit ThrottleCmd(?Accel);
+            exit T3;
         end if;
-        exit T3;
 
     end trap
 end loop
