@@ -1,4 +1,5 @@
-# CS723 Assignment 2 - Cruise Control in Esterel
+# COMPSYS 723 Assignment 2 - Cruise Control in Esterel
+### Group 17 - Francis Cho & Beck Busch</b>
 
 Program files can be found in /src
 
