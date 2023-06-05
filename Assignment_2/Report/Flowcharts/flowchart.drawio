@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-06-05T07:53:02.392Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="-sPmvLB2ErJBCVup6k6d" version="21.2.8" type="device" pages="3">
+<mxfile host="app.diagrams.net" modified="2023-06-05T09:26:12.885Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="KrUrSXYUl2wk-k6WNgKJ" version="21.3.7" type="device" pages="3">
   <diagram id="ioSJlyZO7hc4W2WAl_Xy" name="full fsm">
-    <mxGraphModel dx="1036" dy="654" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1195" dy="616" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -9,7 +9,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-1" value="CruiseState=&lt;br&gt;OFF" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-1" value="CruiseState=&lt;br&gt;OFF" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="120" y="120" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="ZdgQPNJXPmqs1tzHZzcS-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-2" target="ZdgQPNJXPmqs1tzHZzcS-1" edge="1">
@@ -20,15 +20,15 @@
             <mxPoint x="32" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-15" value="Speed &amp;lt; SpeedMin&lt;br&gt;||&lt;br&gt;Speed &amp;gt; SpeedMax&lt;br&gt;||&lt;br&gt;AccelPressed&amp;nbsp;= TRUE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;labelBorderColor=default;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-2" target="ZdgQPNJXPmqs1tzHZzcS-3" edge="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-15" value="InvalidSpeed&lt;br&gt;||&lt;br&gt;AccelPressed&amp;nbsp;= TRUE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;labelBorderColor=default;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-2" target="ZdgQPNJXPmqs1tzHZzcS-3" edge="1">
           <mxGeometry x="0.004" y="18" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-2" value="CruiseState=&lt;br&gt;ON" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-2" value="CruiseState=&lt;br&gt;ON" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="480" y="120" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-16" value="Speed &amp;gt; SpeedMin&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Speed &amp;lt; SpeedMax&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;AccelPressed&amp;nbsp;= FASLE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;labelBorderColor=default;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-3" target="ZdgQPNJXPmqs1tzHZzcS-2" edge="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-16" value="ValidSpeed&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;AccelPressed&amp;nbsp;= FALSE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;labelBorderColor=default;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-3" target="ZdgQPNJXPmqs1tzHZzcS-2" edge="1">
           <mxGeometry y="18" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -52,10 +52,10 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-3" value="CruiseState=&lt;br&gt;DISABLE" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-3" value="CruiseState=&lt;br&gt;DISABLE" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="480" y="320" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-18" value="RESUME button&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Speed &amp;gt; SpeedMin&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;Speed &amp;lt; SpeedMax&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;AccelPressed&amp;nbsp;= FALSE" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.686;exitY=0.012;exitDx=0;exitDy=0;entryX=0.082;entryY=0.778;entryDx=0;entryDy=0;strokeColor=default;entryPerimeter=0;labelBorderColor=default;exitPerimeter=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-4" target="ZdgQPNJXPmqs1tzHZzcS-2" edge="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-18" value="RESUME button&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;ValidSpeed&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&amp;amp;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;AccelPressed&amp;nbsp;= FALSE" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.686;exitY=0.012;exitDx=0;exitDy=0;entryX=0.082;entryY=0.778;entryDx=0;entryDy=0;strokeColor=default;entryPerimeter=0;labelBorderColor=default;exitPerimeter=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-4" target="ZdgQPNJXPmqs1tzHZzcS-2" edge="1">
           <mxGeometry x="0.1373" y="13" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -63,7 +63,7 @@
         <mxCell id="ZdgQPNJXPmqs1tzHZzcS-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-4" target="ZdgQPNJXPmqs1tzHZzcS-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-22" value="RESUME button&lt;br&gt;&amp;amp;&lt;br&gt;Speed &amp;lt; SpeedMin&lt;br&gt;||&lt;br&gt;Speed &amp;gt; SpeedMax&lt;br&gt;||&lt;br&gt;AccelPressed = TRUE" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBorderColor=default;" parent="ZdgQPNJXPmqs1tzHZzcS-20" vertex="1" connectable="0">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-22" value="RESUME button&lt;br&gt;&amp;amp;&lt;br&gt;InvalidSpeed&lt;br&gt;||&lt;br&gt;AccelPressed = TRUE" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBorderColor=default;" parent="ZdgQPNJXPmqs1tzHZzcS-20" vertex="1" connectable="0">
           <mxGeometry x="0.1853" relative="1" as="geometry">
             <mxPoint x="-22" y="-30" as="offset" />
           </mxGeometry>
@@ -77,7 +77,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-4" value="CruiseState=&lt;br&gt;STDBY" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-4" value="CruiseState=&lt;br&gt;STDBY" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
           <mxGeometry x="120" y="320" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="ZdgQPNJXPmqs1tzHZzcS-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-5" target="ZdgQPNJXPmqs1tzHZzcS-1" edge="1">
@@ -92,11 +92,11 @@
             <mxPoint x="14" y="11" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-5" value="CAR&lt;br&gt;STARTS" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-5" value="CAR&lt;br&gt;STARTS" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
           <mxGeometry x="40" y="40" width="80" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-14" value="Speed &amp;gt; SpeedMin&lt;br&gt;&amp;amp;&lt;br&gt;Speed &amp;lt; SpeedMax&lt;br&gt;&amp;amp;&lt;br&gt;Accel = FASLE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBorderColor=default;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-2" target="ZdgQPNJXPmqs1tzHZzcS-2" edge="1">
-          <mxGeometry x="0.0769" y="10" relative="1" as="geometry">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-14" value="ValidSpeed&lt;br&gt;&amp;amp;&lt;br&gt;AccelPressed = FALSE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBorderColor=default;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-2" target="ZdgQPNJXPmqs1tzHZzcS-2" edge="1">
+          <mxGeometry x="0.0768" y="10" relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="640" y="160" />
               <mxPoint x="640" y="80" />
@@ -126,21 +126,21 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-48" value="ON button / CruiseSpeed = Speed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBorderColor=default;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-43" edge="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-48" value="ON button / CruiseSpeed = Speed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBorderColor=default;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;fontSize=11;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-43" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="363.4612058888274" y="488.2647091551571" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-43" value="CruiseState=&lt;br&gt;OFF&lt;br&gt;Car speed controlled by accel pedal" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-43" value="CruiseState=&lt;br style=&quot;font-size: 11px;&quot;&gt;OFF&lt;br style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Car speed controlled by accel pedal&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="46" y="450" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-44" value="CruiseState=&lt;br&gt;ON&lt;br&gt;Car speed automatically controlled" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-44" value="CruiseState=&lt;br style=&quot;font-size: 11px;&quot;&gt;ON&lt;br style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Car speed automatically controlled&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="360" y="460" width="120" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-45" value="CruiseState=&lt;br&gt;DISABLE&lt;br&gt;Car speed controlled by accel pedal" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-45" value="CruiseState=&lt;br style=&quot;font-size: 11px;&quot;&gt;DISABLE&lt;br style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Car speed controlled by accel pedal&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="360" y="690" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-46" value="CruiseState=&lt;br&gt;STDBY&lt;br&gt;Car speed controlled by accel pedal" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-46" value="CruiseState=&lt;br style=&quot;font-size: 11px;&quot;&gt;STDBY&lt;br style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Car speed controlled by accel pedal&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="90" y="690" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="ZdgQPNJXPmqs1tzHZzcS-47" value="" style="endArrow=none;html=1;rounded=0;shape=link;" parent="1" edge="1">
@@ -149,7 +149,7 @@
             <mxPoint x="670" y="440" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-51" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;labelBorderColor=default;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-46" target="ZdgQPNJXPmqs1tzHZzcS-46" edge="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-51" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;labelBorderColor=default;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=11;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-46" target="ZdgQPNJXPmqs1tzHZzcS-46" edge="1">
           <mxGeometry x="0.0714" y="82" relative="1" as="geometry">
             <mxPoint x="110" y="640" as="targetPoint" />
             <Array as="points">
@@ -160,7 +160,7 @@
             <mxPoint x="-2" y="-20" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-44" target="ZdgQPNJXPmqs1tzHZzcS-44" edge="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=11;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-44" target="ZdgQPNJXPmqs1tzHZzcS-44" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="350" y="510" />
@@ -169,7 +169,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-45" target="ZdgQPNJXPmqs1tzHZzcS-45" edge="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=11;" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-45" target="ZdgQPNJXPmqs1tzHZzcS-45" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="350" y="730" />
@@ -178,20 +178,71 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-55" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;SET button / CruiseSpeed = Speed&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;QUICKACCEL button / CruiseSpeed += SpeedInc&lt;br&gt;IF CruiseSpeed &amp;lt; SpeedMax&lt;br&gt;ELSE CruiseSpeed = SpeedMax&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;QUICKDECEL button / CruiseSpeed -= SpeedInc&lt;br&gt;&lt;/font&gt;IF CruiseSpeed &amp;gt; SpeedMin&lt;br&gt;ELSE CruiseSpeed = SpeedMin&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBorderColor=default;labelBackgroundColor=default;" parent="1" vertex="1">
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-55" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;SET button / CruiseSpeed = Speed&lt;br style=&quot;border-color: var(--border-color); font-size: 11px;&quot;&gt;&lt;br style=&quot;border-color: var(--border-color); font-size: 11px;&quot;&gt;QUICKACCEL button / CruiseSpeed += SpeedInc&lt;br style=&quot;font-size: 11px;&quot;&gt;IF CruiseSpeed &amp;lt; SpeedMax&lt;br style=&quot;font-size: 11px;&quot;&gt;ELSE CruiseSpeed = SpeedMax&lt;br style=&quot;border-color: var(--border-color); font-size: 11px;&quot;&gt;&lt;br style=&quot;border-color: var(--border-color); font-size: 11px;&quot;&gt;QUICKDECEL button / CruiseSpeed -= SpeedInc&lt;br style=&quot;font-size: 11px;&quot;&gt;&lt;/font&gt;IF CruiseSpeed &amp;gt; SpeedMin&lt;br style=&quot;font-size: 11px;&quot;&gt;ELSE CruiseSpeed = SpeedMin&lt;br style=&quot;font-size: 11px;&quot;&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelBorderColor=default;labelBackgroundColor=default;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="160" y="580" width="250" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-58" value="if&lt;br&gt;(Accel &amp;gt; PedalsMin)&lt;br&gt;then&lt;br&gt;{AccelPressed = TRUE}" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="510" y="450" width="140" height="70" as="geometry" />
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-58" value="if&lt;br&gt;(Accel &amp;gt; PedalMin)&lt;br&gt;then&lt;br&gt;{emit AccelPressed}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="530" y="450" width="140" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-60" value="if&lt;br&gt;(Brake &amp;gt; PedalsMin)&lt;br&gt;then&lt;br&gt;{BrakePressed = TRUE}" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="510" y="520" width="140" height="70" as="geometry" />
+        <mxCell id="ZdgQPNJXPmqs1tzHZzcS-60" value="if&lt;br&gt;(Brake &amp;gt; PedalMin)&lt;br&gt;then&lt;br&gt;{emit BrakePressed}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="530" y="520" width="140" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="LG1nXQr79dkPCWlXl7MU-1" value="if&lt;br&gt;(Speed &amp;gt; SpeedMin)&lt;br&gt;&amp;amp;&lt;br&gt;(Speed &amp;lt; SpeedMax)&lt;br&gt;then&lt;br&gt;{ValidSpeed = TRUE}" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="510" y="590" width="140" height="90" as="geometry" />
+        <mxCell id="LG1nXQr79dkPCWlXl7MU-1" value="if&lt;br&gt;(Speed &amp;gt; SpeedMin)&lt;br&gt;&amp;amp;&lt;br&gt;(Speed &amp;lt; SpeedMax)&lt;br&gt;then&lt;br&gt;{emit ValidSpeed}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="530" y="630" width="140" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="LG1nXQr79dkPCWlXl7MU-2" value="if&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;(Speed &amp;lt; SpeedMin)&lt;br&gt;||&lt;br&gt;(Speed &amp;gt; SpeedMax)&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;then&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;{ValidSpeed = TRUE}" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="510" y="680" width="140" height="90" as="geometry" />
+        <mxCell id="LG1nXQr79dkPCWlXl7MU-2" value="if&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;(Speed &amp;lt; SpeedMin)&lt;br&gt;||&lt;br&gt;(Speed &amp;gt; SpeedMax)&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;then&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;{emit InvalidSpeed}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="530" y="720" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-2" value="&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;b style=&quot;font-size: 12px;&quot;&gt;CruiseControlSystem&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="290" y="60" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-3" value="&lt;b&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;PedalDetection&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="550" y="590" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-4" value="&lt;b&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;SpeedCheck&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="561" y="810" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-43">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="330" y="660" as="sourcePoint" />
+            <mxPoint x="106" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-7" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Emit ThrottleCmd(Accel)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="550" width="100" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-8" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-44" target="Nab63pqr5o1Pgh5YBosg-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="116" y="540" as="sourcePoint" />
+            <mxPoint x="463" y="580" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="463" y="575" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-9" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Emit ThrottleCmd(regulateThrottle(&lt;i&gt;x&lt;/i&gt;, CruiseSpeed, Speed))&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;rotation=-90;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="390" y="570" width="220" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-10" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-46">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="116" y="540" as="sourcePoint" />
+            <mxPoint x="150" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-12" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Emit ThrottleCmd(Accel)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="100" y="790" width="100" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="ZdgQPNJXPmqs1tzHZzcS-45">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="780" as="sourcePoint" />
+            <mxPoint x="420" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-14" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Emit ThrottleCmd(Accel)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="370" y="790" width="100" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Nab63pqr5o1Pgh5YBosg-15" value="&lt;b&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;CarDrivingControl &amp;amp; CruiseSpeedManagement&lt;/font&gt;&lt;br&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="440" width="250" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
