@@ -1,0 +1,332 @@
+% ===== Main Cruise Control Module =====
+module CruiseControlMain:
+
+% ===== Interface Inputs =====
+input On, Off;                  % Enable/Disable the cruise control
+input Resume;                   % Resume CC after braking
+input Set;                      % Set the CC speed to the current speed
+input QuickDecel, QuickAccel;   % Increase or decrease the CC speed
+input Accel : float;            % Accelerator pedal input
+input Brake : float;            % Brake pedal input
+input Speed : float;            % Car Speed input
+
+% input AccelPressed, BrakePressed;   % input signals from PedalDetection module
+
+% ===== Interface Outputs =====
+output CruiseSpeed : float;     % Cruise speed value
+output ThrottleCmd : float;     % Throttle command
+output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:STDBY, 4:DISABLE
+
+signal state : integer in
+signal AccelPressed in
+signal BrakePressed in
+
+signal ValidSpeed in
+signal InvalidSpeed in
+
+[loop
+    present state then
+        emit CruiseState(?state);
+    end present;
+    pause
+end loop]
+||
+run CruiseControlSystem[
+    signal On/On;
+    signal Off/Off;
+    signal Resume/Resume;
+    signal AccelPressed/AccelPressed;
+    signal BrakePressed/BrakePressed;
+    signal Speed/Speed
+]
+||
+run CarDrivingControl[
+    signal CruiseState/CruiseState;
+    signal CruiseSpeed/CruiseSpeed;
+    signal Accel/Accel;
+    signal Speed/Speed
+]
+||
+run CruiseSpeedManagment[
+    signal CruiseState/CruiseState;
+    signal QuickAccel/QuickAccel;
+    signal QuickDecel/QuickDecel;
+    signal Speed/Speed;
+    signal Set/Set;
+    signal CruiseSpeed/CruiseSpeed
+]
+||
+run PedalDetection[
+    signal Accel/Accel;
+    signal Brake/Brake
+]
+||
+run SpeedCheck[
+    signal Speed/Speed
+]
+
+
+end signal
+end signal
+
+end signal
+end signal
+end signal
+end module
+
+
+
+
+module CruiseControlSystem:
+input On, Off;                  
+input Resume;                 
+input Set;                     
+input Accel : float;            
+input Brake : float;            
+input Speed : float;     
+input QuickAccel;
+input QuickDecel;      
+
+input AccelPressed, BrakePressed;   % input signals from PedalDetection module
+input ValidSpeed, InvalidSpeed;
+
+% ===== Interface Outputs =====
+output CruiseSpeed : float;     
+output CruiseState : integer;   % State of the cruise control, 1:OFF, 2:ON, 3:STDBY, 4:DISABLE
+
+% speed
+constant SpeedMin : float;
+constant SpeedMax : float;
+
+var state := 1 : integer in
+loop
+    emit CruiseState(state);
+    pause;
+    trap T2 in
+
+        % OFF STATE
+        if state = 1 then
+            present(On) then
+                state := 2; % ON STATE
+                exit T2;
+            end present;
+
+            present(Off or Resume or Set or QuickAccel or QuickDecel or Brake) then
+                state := 1;
+                exit T2;
+            end present;
+        end if;
+
+
+        % ON STATE
+        if state = 2 then
+            present(Off) then
+                state := 1; % OFF 
+                exit T2;
+            end present;
+
+            present ((ValidSpeed) and (not AccelPressed)) then
+                state := 2;  % ON
+                exit T2;
+            end present;
+
+            present (BrakePressed) then
+                state := 3; % STDBY
+                exit T2;
+            end present;
+
+            present ((InvalidSpeed) or (AccelPressed)) then
+                state := 4; % DISABLE
+                exit T2;
+            end present;
+            exit T2;
+
+        end if;
+
+
+        % STDBY STATE
+        if state = 3 then
+            present(Off) then
+                state := 1;  % OFF
+                exit T2;
+            end present;
+
+            present(Resume and ((InvalidSpeed) or (AccelPressed))) then
+                state := 4;  % DISABLE
+                exit T2;
+            end present;
+
+            present (Resume and ValidSpeed and (not AccelPressed)) then
+                state := 2; % ON
+                exit T2;
+            end present;
+
+        end if;
+
+
+        % DISABLE STATE
+        if state = 4 then
+            present(Off) then
+                state := 1;  % OFF
+                exit T2;    
+            end present;
+
+            present (BrakePressed) then
+                state := 3;  % STDBY 
+                exit T2;
+            end present;
+
+            present ((ValidSpeed) and (not AccelPressed)) then
+                state := 2;  % ON
+                exit T2;
+            end present;
+            exit T2;
+
+        end if;
+
+    end trap
+end loop
+end var
+end module
+
+
+
+
+module CarDrivingControl:
+% inputs
+input CruiseState : integer;
+input CruiseSpeed : float;
+input Speed : float;
+input Accel : float;
+
+output ThrottleCmd : float;
+
+function regulateThrottle(integer, float, float) : float;
+
+loop
+    pause;
+    trap T3 in
+        % OFF, speed driven by accelerator
+        if (?CruiseState = 1) then
+            emit ThrottleCmd(?Accel);
+            exit T3;
+
+        % OFF to ON, use isGoing value of 0
+        elsif ((?CruiseState = 2) and (pre(?CruiseState) = 1)) then
+            emit ThrottleCmd(regulateThrottle(0, ?CruiseSpeed, ?Speed));
+            exit T3;
+
+        % ON, speed automatically regulated, use isGoing value of 1
+        elsif (?CruiseState = 2) then
+            emit ThrottleCmd(regulateThrottle(1, ?CruiseSpeed, ?Speed));
+            exit T3;
+
+        % for all the other states STDBY and DISABLE, use Accel
+        else 
+            emit ThrottleCmd(?Accel);
+            exit T3;
+        end if;
+
+    end trap
+end loop
+end module
+
+
+
+
+module CruiseSpeedManagment:
+% inputs
+input CruiseState : integer;
+input QuickDecel, QuickAccel;
+input Set;
+input Speed : float;
+
+% output
+output CruiseSpeed : float;
+
+% speed
+constant SpeedMin : float;
+constant SpeedMax : float;
+constant SpeedInc : float;
+
+var newCruiseSpeed := 0.0f : float in
+
+loop
+    emit CruiseSpeed(newCruiseSpeed);
+    pause;
+    trap T3 in
+        % OFF state
+        if (?CruiseState = 1) then
+            newCruiseSpeed := 0.0f;
+            exit T3;
+        else
+            % set to the current speed
+            present(Set) then
+                newCruiseSpeed := ?Speed;
+                exit T3;
+            end present;
+
+            % increased by SpeedInc, provided lower than SpeedMax
+            present(QuickAccel) then
+                if ((newCruiseSpeed + SpeedInc) < SpeedMax) then
+                    newCruiseSpeed := newCruiseSpeed + SpeedInc;
+                    exit T3;
+                end if;
+            end present;
+
+            present(QuickDecel) then
+                if ((newCruiseSpeed - SpeedInc) > SpeedMin) then
+                    newCruiseSpeed := newCruiseSpeed - SpeedInc;
+                    exit T3;
+                end if;
+            end present;
+
+        end if;
+    end trap
+end loop
+end var
+end module
+
+
+
+
+module PedalDetection:
+% used to detect pedal presses
+% inputs : Accel and Brake
+input Accel : float;
+input Brake : float;
+constant PedalMin = 3.0f : float;
+output AccelPressed, BrakePressed;
+
+loop
+pause;
+    if (?Accel > PedalMin) then
+        emit AccelPressed;
+    end if;
+
+    if (?Brake > PedalMin) then
+        emit BrakePressed;
+    end if;
+end loop
+end module
+
+
+module SpeedCheck:
+input Speed : float;
+constant SpeedMax : float;
+constant SpeedMin : float;
+
+output ValidSpeed, InvalidSpeed;
+
+loop
+pause;
+    if ((?Speed > SpeedMin) and (?Speed < SpeedMax)) then
+        emit ValidSpeed;
+    end if;
+
+    if ((?Speed < SpeedMin) or (?Speed > SpeedMax)) then
+        emit InvalidSpeed;
+    end if;
+
+end loop
+end module
